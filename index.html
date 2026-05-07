@@ -150,7 +150,7 @@
     2. Nếu trong Apps Script có đặt APP_TOKEN, dán token giống hệt vào DEFAULT_TOKEN.
        Nếu không dùng token, để DEFAULT_TOKEN = "".
   */
-  var DEFAULT_ENDPOINT = "https://script.google.com/macros/s/AKfycbzK7WZOqbxsHchnGcn_bi3Koy0PUeCRRSkwO8vgwWzzjNRPdoDc9hDCG1HVl-mv82VF/exec";
+  var DEFAULT_ENDPOINT = "https://script.google.com/macros/s/AKfycbxkLwPF55XHs5s6nvWozvSRklgX4FqX0y5q4nFf6FhdJwv5V8NDPovo2KdnIVtOFAS6/exec";
   var DEFAULT_TOKEN = "";
   /* ================== HẾT CẤU HÌNH ================== */
 
@@ -246,10 +246,11 @@
     return ["Ghi nhận này liên quan tới sản phẩm, xưởng, khách hay rủi ro?", "Có buyer/supplier cụ thể nào liên quan không?", "Cần dùng ghi nhận này cho proposal, sample, sourcing hay QC?"];
   }
   function replyDraft(type,tags){
-    if(type === "buyer") return "Cảm ơn anh/chị đã gửi yêu cầu. Anh/chị vui lòng xác nhận giúp thông số sản phẩm, số lượng dự kiến, yêu cầu đóng gói và thời hạn cần hàng để PEFSO kiểm tra khả năng sản xuất và phương án mẫu phù hợp.";
-    if(type === "supplier") return "Anh/chị vui lòng xác nhận giúp xưởng có thể làm mẫu không, gửi ảnh các sản phẩm tương tự đã làm gần đây, đồng thời cho biết năng lực nhận hàng hiện tại và thời gian giao mẫu dự kiến.";
-    if(tags.indexOf("diffuser") >= 0) return "Anh/chị vui lòng xác nhận đường kính que, chiều dài, quy cách đóng gói, số lượng dự kiến và yêu cầu về độ hút hương, độ khô hoặc kiểm soát mốc nếu có.";
-    return "Đã ghi nhận thông tin. PEFSO sẽ rà soát hướng sản phẩm, yêu cầu kỹ thuật, khả năng sourcing và bước xử lý tiếp theo.";
+    if(type === "buyer") return "Thank you for your inquiry. Could you please confirm the product specification, expected quantity, packaging requirement, and target delivery schedule so that PEFSO can check production feasibility and sample options?";
+    if(type === "supplier") return "Could you please confirm whether your workshop can make a sample, share recent photos of similar products, and advise your current production capacity and estimated sample lead time?";
+    if(tags.indexOf("diffuser") >= 0) return "Could you please confirm the stick diameter, length, packaging format, expected quantity, and any requirements for absorption, drying, or mold control?";
+    if(tags.indexOf("wall-decor") >= 0) return "Could you please confirm the size, shape, finishing standard, installation requirement, packaging method, and expected quantity for this wall decoration item?";
+    return "Thank you for the information. PEFSO will review the product direction, technical requirements, sourcing feasibility, and next steps accordingly.";
   }
 
   function makeRecord(rawText, image, linkUrl, linkTitle, inputType, urgent, existingId){
@@ -300,10 +301,10 @@
     var qs=(item.follow_up_questions||[]).map(function(q){return "<li>"+esc(q)+"</li>";}).join("");
     var sim=(item.similar||[]).map(function(s){return "<li>"+esc(s)+"</li>";}).join("");
     return "<div style='margin-top:6px'>"+esc(item.auto_summary)+"</div><div style='margin-top:6px'>"+esc(item.next_action)+"</div><div class='chips'>"+chips(item.auto_tags,item.priority,item.source)+"</div>"+
-      "<div class='reward'><div class='reward-box'><b>Cần hỏi tiếp</b><ol>"+qs+"</ol></div><div class='reward-box'><b>Tin nhắn gợi ý</b><div class='reply'>"+esc(item.reply_draft)+"</div><div class='actions'><button class='btn light' type='button' onclick='navigator.clipboard && navigator.clipboard.writeText("+JSON.stringify(item.reply_draft)+")'>Copy tin nhắn</button></div></div>"+
+      "<div class='reward'><div class='reward-box'><b>Cần hỏi tiếp</b><ol>"+qs+"</ol></div><div class='reward-box'><b>Tin nhắn gợi ý cho khách/xưởng (tiếng Anh)</b><div class='reply'>"+esc(item.reply_draft)+"</div><div class='actions'><button class='btn light' type='button' onclick='navigator.clipboard && navigator.clipboard.writeText("+JSON.stringify(item.reply_draft)+")'>Copy tin nhắn</button></div></div>"+
       (sim ? "<div class='reward-box'><b>Ghi nhận liên quan</b><ol>"+sim+"</ol></div>" : "")+"</div>";
   }
-  function brief(item){ return ["[PEFSO GHI NHẬN]","ID: "+item.id,"Ngày: "+fmt(item.created_at),"Đầu vào: "+typeVi(item.input_type),"Loại: "+typeVi(item.guessed_type),"Ưu tiên: "+(item.priority==="urgent"?"Gấp":"Bình thường"),"Tóm tắt: "+item.auto_summary,"Việc tiếp theo: "+item.next_action,"Cần hỏi tiếp: "+(item.follow_up_questions||[]).join(" | "),"Tin nhắn gợi ý: "+(item.reply_draft||""),"Nội dung gốc: "+(item.raw_text||""),"Link: "+(item.link_url||""),"Tags: "+(item.auto_tags||[]).join(", "),"Nguồn: "+(item.source||"local")].join("\n"); }
+  function brief(item){ return ["[PEFSO GHI NHẬN]","ID: "+item.id,"Ngày: "+fmt(item.created_at),"Đầu vào: "+typeVi(item.input_type),"Loại: "+typeVi(item.guessed_type),"Ưu tiên: "+(item.priority==="urgent"?"Gấp":"Bình thường"),"Tóm tắt: "+item.auto_summary,"Việc tiếp theo: "+item.next_action,"Cần hỏi tiếp: "+(item.follow_up_questions||[]).join(" | "),"Tin nhắn gợi ý tiếng Anh: "+(item.reply_draft||""),"Nội dung gốc: "+(item.raw_text||""),"Link: "+(item.link_url||""),"Tags: "+(item.auto_tags||[]).join(", "),"Nguồn: "+(item.source||"local")].join("\n"); }
   function typeVi(t){ return {photo:"Ảnh",note:"Ghi nhanh",link:"Link",product:"Sản phẩm",supplier:"Xưởng/nguồn",buyer:"Khách hỏi",issue:"Vấn đề/rủi ro",raw:"Ghi nhận thô"}[t] || t; }
   function tsv(list){ var header="id\tcreated_at\tinput_type\tguessed_type\tpriority\tauto_summary\tnext_action\traw_text\tlink_url\ttags\tsource\tdeal_stage\tbuyer_need\tsupplier_risk\tqc_risk\tproduct_family\tproposal_fit\tfollow_up_questions\treply_draft"; var rows=list.map(function(x){ return [x.id,x.created_at,x.input_type,x.guessed_type,x.priority,x.auto_summary,x.next_action,x.raw_text||"",x.link_url||"",(x.auto_tags||[]).join(", "),x.source||"",x.deal_stage||"",x.buyer_need||"",x.supplier_risk||"",x.qc_risk||"",x.product_family||"",x.proposal_fit||"",(x.follow_up_questions||[]).join(" | "),x.reply_draft||""].map(clean).join("\t"); }); return [header].concat(rows).join("\n"); }
   function clean(s){ return String(s||"").replace(/[\t\n\r]+/g," "); }
