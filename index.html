@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PEFSO Drop</title>
+  <style>
+    :root{
+      --bg:#fbf5ec;--card:#fff;--ink:#153d35;--muted:#6d756e;--line:#eadcc8;
+      --soft:#fff1df;--orange:#ed7a1a;--green:#153d35;--blue:#245b8f;--red:#b42318;
+      --shadow:0 16px 42px rgba(58,39,16,.08);--r:24px
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+    button,input,textarea{font:inherit}button{cursor:pointer}
+    header{position:sticky;top:0;z-index:20;background:rgba(251,245,236,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+    .head{max-width:840px;margin:auto;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .brand{display:flex;align-items:center;gap:10px;min-width:0}.logo{width:42px;height:42px;border-radius:15px;background:var(--orange);color:#fff;font-size:25px;font-weight:900;display:flex;align-items:center;justify-content:center}
+    h1{font-size:19px;margin:0}.sub{font-size:12px;color:var(--muted);margin-top:3px}
+    .app{max-width:840px;margin:auto;padding:14px 14px 88px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:15px;margin-top:14px}
+    .card h2{font-size:18px;margin:0 0 6px}.card p{font-size:13px;color:var(--muted);line-height:1.4;margin:0}
+    .btn{border:0;border-radius:16px;padding:12px 14px;font-weight:850;background:var(--green);color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+    .btn.orange{background:var(--orange)}.btn.light{background:#fff;color:var(--ink);border:1px solid var(--line)}.btn.blue{background:var(--blue)}.btn.red{background:#fff;color:var(--red);border:1px solid #efc2ba}.btn.full{width:100%}
+    .btn:active,.tile:active{transform:translateY(1px)}
+    .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.tile{min-height:110px;border-radius:24px;border:1px solid #f2c894;background:var(--soft);color:#814407;font-size:17px;font-weight:900;padding:14px;text-align:center}
+    .tile.primary{background:var(--orange);color:#fff}.tile.dark{background:var(--green);border-color:var(--green);color:#fff}.tile small{display:block;font-size:12px;margin-top:6px;font-weight:700;opacity:.84}
+    .form{display:none}.form.show{display:block}.mode{display:inline-flex;background:#fff7ed;border:1px solid #ffd2a1;color:#8b4206;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:850;margin-bottom:10px}
+    .photo{display:none;height:240px;border:2px dashed #efbd7e;background:#fff7eb;border-radius:24px;align-items:center;justify-content:center;text-align:center;color:#9d560f;font-weight:900;overflow:hidden;margin-bottom:10px}
+    .photo.show{display:flex}.photo img{width:100%;height:100%;object-fit:cover}.hidden{display:none!important}
+    textarea,input{width:100%;border:1px solid var(--line);border-radius:18px;background:#fff;color:var(--ink);padding:14px 13px;outline:none}
+    textarea{min-height:112px;resize:vertical;line-height:1.48;font-size:16px}input{font-size:15px}
+    textarea:focus,input:focus{border-color:#f2a25c;box-shadow:0 0 0 4px rgba(237,122,26,.12)}
+    .link-row{display:none;grid-template-columns:1fr;gap:10px;margin-top:10px}.link-row.show{display:grid}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .result{display:none;margin-top:12px;border-radius:22px;border:1px solid #bfe4cc;background:#effaf3;color:#145437;padding:13px;font-size:13px;line-height:1.45}.result.show{display:block}
+    .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.chip{display:inline-flex;border:1px solid var(--line);background:#fff8ef;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:800;color:#704211}.chip.red{background:#fff3f0;color:#9c2c1f;border-color:#f3c2ba}.chip.blue{background:#eef6ff;color:#244f78;border-color:#c7def5}
+    .reward{display:grid;gap:10px;margin-top:10px}.reward-box{background:#fff;border:1px solid #cfe6d8;border-radius:18px;padding:12px}.reward-box b{display:block;margin-bottom:6px}.reward-box ol{margin:0;padding-left:18px}.reward-box li{margin:5px 0}.reply{white-space:pre-wrap;background:#f7fbff;border:1px solid #c7def5;border-radius:16px;padding:10px;color:#244f78}
+    .search{margin-top:12px}.records{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+    .record{border:1px solid var(--line);border-radius:20px;background:#fff;padding:10px;display:grid;grid-template-columns:76px 1fr;gap:10px;cursor:pointer}
+    .thumb{width:76px;height:76px;border-radius:17px;background:#f4eadc;display:flex;align-items:center;justify-content:center;color:#b09976;font-weight:900;overflow:hidden}.thumb img{width:100%;height:100%;object-fit:cover}
+    .record h3{font-size:14px;line-height:1.25;margin:0}.meta{font-size:11px;color:var(--muted);margin-top:5px}.note{font-size:12px;color:#44524b;line-height:1.33;margin-top:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .output{background:var(--green);color:#fff;border-radius:24px;padding:15px;margin-top:14px}.output h2{font-size:18px;margin:0 0 4px}.output p{color:#dbe9e4}.output-box{white-space:pre-wrap;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:18px;padding:12px;margin-top:10px;max-height:260px;overflow:auto;font-size:13px;line-height:1.45}
+    .config{display:none}.config.show{display:block}.status-line{font-size:12px;color:var(--muted);margin-top:8px}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.stats div{border:1px solid var(--line);background:#fff;border-radius:18px;padding:12px}.stats b{font-size:22px;display:block}.stats span{font-size:12px;color:var(--muted)}
+    .empty{text-align:center;border:1px dashed var(--line);background:#fff;border-radius:20px;color:var(--muted);padding:24px;margin-top:12px}
+    .admin-only{display:none}.admin .admin-only{display:block}.admin .admin-inline{display:inline-flex}
+    .bottom{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(255,250,243,.96);backdrop-filter:blur(12px);border-top:1px solid var(--line);z-index:50;padding:8px 10px env(safe-area-inset-bottom)}.bottom button{flex:1;border:0;background:transparent;border-radius:14px;padding:10px 4px;font-weight:900;color:var(--muted)}.bottom button.active{background:var(--soft);color:var(--orange)}
+    @media(max-width:780px){.app{padding:12px 12px 88px}.head .admin-only{display:none!important}.tiles{grid-template-columns:1fr}.tile{min-height:88px}.records{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.tab{display:none}.tab.active{display:block}.bottom{display:flex}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="head">
+    <div class="brand"><div class="logo">p</div><div><h1>PEFSO Drop</h1><div class="sub">Photo · Note · Link</div></div></div>
+    <button class="btn light admin-only" id="exportBtn">Export</button>
+  </div>
+</header>
+
+<main class="app" id="appRoot">
+  <section id="captureTab" class="tab active">
+    <div class="card">
+      <div class="tiles">
+        <button class="tile primary" data-mode="photo" type="button">Ảnh<small>mẫu / xưởng / screenshot</small></button>
+        <button class="tile dark" data-mode="note" type="button">Ghi nhanh<small>gõ hoặc dùng voice-to-text</small></button>
+        <button class="tile" data-mode="link" type="button">Dán link<small>web / catalogue / khách gửi</small></button>
+      </div>
+    </div>
+
+    <div class="card form" id="captureForm">
+      <div class="mode" id="modeLabel">New drop</div>
+      <label class="photo" id="photoBox" for="photoInput"><span id="photoText">Add image</span><img id="photoPreview" class="hidden" alt="preview"></label>
+      <input class="hidden" id="photoInput" type="file" accept="image/*">
+      <textarea id="rawText" placeholder="Nhập ghi chú thô tại đây"></textarea>
+      <div class="link-row" id="linkRow"><input id="linkUrl" placeholder="Paste link"><input id="linkTitle" placeholder="Link title, optional"></div>
+      <div class="actions"><button class="btn orange" id="saveBtn" type="button">Save</button><button class="btn blue" id="urgentBtn" type="button">Save urgent</button><button class="btn light" id="clearBtn" type="button">Clear</button></div>
+      <div class="result" id="resultBox"></div>
+    </div>
+
+    <div class="card">
+      <h2>Recent</h2><p>Latest captured signals.</p>
+      <input class="search" id="searchInput" placeholder="Search: rattan, basket, Thái Bình, buyer, issue...">
+      <div id="recordList" class="records"></div><div id="emptyBox" class="empty hidden">No matching drops.</div>
+    </div>
+  </section>
+
+  <section id="outputTab" class="tab active">
+    <div class="output">
+      <h2>Ready Output</h2><p>Brief generated from latest drop.</p>
+      <div class="actions">
+        <button class="btn orange" id="copyLatestBtn" type="button">Copy latest brief</button>
+        <button class="btn light" id="copyReplyBtn" type="button">Copy reply</button>
+        <button class="btn light admin-only" id="copyTsvBtn" type="button">Copy TSV</button>
+      </div>
+      <div class="output-box" id="outputBox">No recent drop.</div>
+    </div>
+
+    <div class="card admin-only"><h2>Snapshot</h2><div class="stats"><div><b id="totalCount">0</b><span>total</span></div><div><b id="urgentCount">0</b><span>urgent</span></div><div><b id="productCount">0</b><span>product</span></div><div><b id="supplierCount">0</b><span>supplier</span></div></div></div>
+
+    <div class="card admin-only">
+      <h2>Backend</h2>
+      <p>Configure only once before sharing the GitHub Pages link.</p>
+      <div class="actions"><button class="btn light" id="toggleConfigBtn" type="button">Configure</button><button class="btn light" id="testSendBtn" type="button">Send test row</button></div>
+      <div class="config" id="configBox">
+        <input id="endpointInput" placeholder="Apps Script Web App URL">
+        <input id="tokenInput" placeholder="Optional APP_TOKEN">
+        <div class="actions"><button class="btn" id="saveEndpointBtn" type="button">Save config</button><button class="btn red" id="clearEndpointBtn" type="button">Clear config</button></div>
+      </div>
+      <div class="status-line" id="backendStatus">Backend: local only</div>
+    </div>
+  </section>
+</main>
+
+<nav class="bottom"><button type="button" data-tab="captureTab" class="active">Capture</button><button type="button" data-tab="outputTab">Output</button></nav>
+<iframe name="pefsoHiddenFrame" id="pefsoHiddenFrame" class="hidden"></iframe>
+
+<script>
+(function(){
+  /*
+    ================== CẤU HÌNH BACKEND ==================
+    1. Dán Web App URL của Apps Script vào DEFAULT_ENDPOINT.
+       URL phải kết thúc bằng /exec.
+    2. Nếu trong Apps Script có đặt APP_TOKEN, dán token giống hệt vào DEFAULT_TOKEN.
+       Nếu không dùng token, để DEFAULT_TOKEN = "".
+    3. Sau khi điền 2 dòng này, upload index.html lên GitHub Pages.
+  */
+  var DEFAULT_ENDPOINT = "https://script.google.com/macros/s/AKfycbwnjBlUT4yQLPVvgZb6IZHpcQMmZtdhmABoCLX8kpX5J1Nzcy-jvD_8u4uWtqusBX-B/exec";
+  var DEFAULT_TOKEN = "";
+  /* ================== HẾT CẤU HÌNH ================== */
+
+  var STORAGE_KEY = "pefso_drop_tony_v3";
+  var ENDPOINT_KEY = "pefso_drop_endpoint";
+  var TOKEN_KEY = "pefso_drop_token";
+  var isAdmin = new URLSearchParams(location.search).get("admin") === "1";
+  if(isAdmin) document.body.classList.add("admin");
+
+  var mode = "note";
+  var imageData = "";
+  var savedEndpoint = localStorage.getItem(ENDPOINT_KEY) || "";
+  var endpoint = savedEndpoint || (DEFAULT_ENDPOINT.indexOf("http") === 0 ? DEFAULT_ENDPOINT : "");
+  var appToken = localStorage.getItem(TOKEN_KEY) || DEFAULT_TOKEN || "";
+  var records = loadRecords();
+
+  var productKeywords = ["rattan","mây","may","bamboo","tre","trúc","truc","basket","giỏ","gio","diffuser","reed","wall decor","decor","plate","tray","banneton","balloon","party","water hyacinth","lục bình","luc binh","cup","holder","spoon","utensil","packaging","sample","mẫu","mau"];
+  var supplierKeywords = ["xưởng","xuong","factory","supplier","workshop","làng nghề","lang nghe","nguồn","source","sản xuất","san xuat","gia công","gia cong","thợ","tho"];
+  var buyerKeywords = ["khách","khach","buyer","order","inquiry","hỏi","hoi","mua","deal","mail","email","trader","importer","amscan","maebata"];
+  var issueKeywords = ["lỗi","loi","fail","hỏng","hong","mốc","moc","delay","chậm","cham","ẩu","au","risk","rủi ro","rui ro","xấu","xau","cong","vênh","venh","không ổn","khong on"];
+
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s || "").replace(/[&<>'"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;","\"":"&quot;"}[c]; }); }
+  function norm(s){ return String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); }
+  function uid(){ return "drop-" + Date.now() + "-" + Math.random().toString(36).slice(2,7); }
+  function loadRecords(){ try{ var saved = localStorage.getItem(STORAGE_KEY); return saved ? JSON.parse(saved) : []; }catch(e){ return []; } }
+  function persist(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(records)); render(); }
+
+  function setMode(nextMode){
+    mode = nextMode;
+    $("captureForm").classList.add("show");
+    $("modeLabel").textContent = {photo:"Ảnh",note:"Ghi nhanh",link:"Dán link"}[mode] || "New drop";
+    $("photoBox").classList.toggle("show", mode === "photo");
+    $("linkRow").classList.toggle("show", mode === "link");
+    if(mode === "photo") setTimeout(function(){ $("photoInput").click(); }, 80);
+    setTimeout(function(){ $("rawText").focus(); }, 120);
+  }
+
+  function localClassify(raw){
+    var t = norm(raw);
+    var scores = {product:0, supplier:0, buyer:0, issue:0};
+    productKeywords.forEach(function(k){ if(t.indexOf(norm(k)) >= 0) scores.product++; });
+    supplierKeywords.forEach(function(k){ if(t.indexOf(norm(k)) >= 0) scores.supplier++; });
+    buyerKeywords.forEach(function(k){ if(t.indexOf(norm(k)) >= 0) scores.buyer++; });
+    issueKeywords.forEach(function(k){ if(t.indexOf(norm(k)) >= 0) scores.issue++; });
+    var guessed = "raw", max = 0;
+    Object.keys(scores).forEach(function(key){ if(scores[key] > max){ max = scores[key]; guessed = key; } });
+    var tags = [];
+    addIf(raw,tags,"rattan",["rattan","mây","may"]); addIf(raw,tags,"bamboo",["bamboo","tre","trúc","truc"]); addIf(raw,tags,"water-hyacinth",["water hyacinth","lục bình","luc binh"]);
+    addIf(raw,tags,"diffuser",["diffuser","reed","fragrance","hương","huong"]); addIf(raw,tags,"basket",["basket","giỏ","gio","storage"]); addIf(raw,tags,"wall-decor",["wall","tường","tuong","decor"]);
+    addIf(raw,tags,"party",["party","balloon","seasonal","bóng bay","bong bay"]); addIf(raw,tags,"qc-risk",issueKeywords); addIf(raw,tags,"supplier",supplierKeywords); addIf(raw,tags,"buyer",buyerKeywords);
+    addIf(raw,tags,"us",["us","mỹ","my","america","amscan"]); addIf(raw,tags,"japan",["japan","nhật","nhat","maebata"]); addIf(raw,tags,"france",["france","pháp","phap","french"]);
+    tags = Array.from(new Set(tags));
+    var priority = tags.indexOf("qc-risk") >= 0 ? "urgent" : "normal";
+    var product_family = family(tags, raw);
+    return {
+      guessed_type: guessed,
+      auto_tags: tags,
+      auto_summary: summary(guessed,tags),
+      next_action: action(guessed,priority),
+      priority: priority,
+      source:"local",
+      deal_stage: guessed === "buyer" ? "inquiry" : "",
+      buyer_need: guessed === "buyer" ? "clarify specification and timeline" : "",
+      supplier_risk: guessed === "supplier" || priority === "urgent" ? "medium" : "",
+      qc_risk: priority === "urgent" ? "high" : "",
+      product_family: product_family,
+      proposal_fit: guessed === "product" || guessed === "buyer" ? "maybe" : "",
+      follow_up_questions: questions(guessed,tags,raw),
+      reply_draft: replyDraft(guessed,tags,raw)
+    };
+  }
+
+  function addIf(raw,tags,tag,keys){ var t = norm(raw); if(keys.some(function(k){ return t.indexOf(norm(k)) >= 0; })) tags.push(tag); }
+  function family(tags, raw){
+    if(tags.indexOf("diffuser") >= 0) return "fragrance";
+    if(tags.indexOf("basket") >= 0) return "basket-storage";
+    if(tags.indexOf("wall-decor") >= 0) return "wall-decor";
+    if(tags.indexOf("party") >= 0) return "party-decor";
+    if(tags.indexOf("bamboo") >= 0) return "bamboo";
+    if(tags.indexOf("water-hyacinth") >= 0) return "water-hyacinth";
+    return "";
+  }
+  function summary(type,tags){ var label = {product:"Product",supplier:"Supplier",buyer:"Buyer",issue:"Issue",raw:"Raw note"}[type] || "Raw note"; return label + " · " + (tags.length ? tags.slice(0,4).join(" / ") : "to classify"); }
+  function action(type,priority){ if(priority==="urgent") return "Review before using in proposal or production."; if(type==="product") return "Review for product matrix or proposal shortlist."; if(type==="supplier") return "Review for supplier memory and sourcing follow-up."; if(type==="buyer") return "Review for buyer profile and proposal direction."; if(type==="issue") return "Review as QC/delivery risk."; return "Review and classify later."; }
+  function questions(type,tags,raw){
+    if(tags.indexOf("diffuser") >= 0) return ["Confirm diameter, length and packaging.", "Clarify absorption/drying requirement.", "Check lead time and repeat supply quantity."];
+    if(type === "supplier") return ["Can they provide recent photos of similar goods?", "Can they make a sample before quotation?", "What is current capacity and lead time?"];
+    if(type === "buyer") return ["What specification and size are required?", "What quantity and target price are expected?", "What is the target delivery schedule?"];
+    if(tags.indexOf("wall-decor") >= 0) return ["Confirm size, shape and finishing requirement.", "Check sample and joint/edge quality.", "Clarify installation/packing requirement."];
+    if(type === "issue") return ["What is the root cause?", "Which supplier/order is affected?", "Can this issue repeat in future orders?"];
+    return ["What is the intended product/use case?", "Which buyer or supplier is related?", "Is this for proposal, sample, sourcing or QC?"];
+  }
+  function replyDraft(type,tags,raw){
+    if(type === "buyer") return "Thanks for your inquiry. Please share the target specification, quantity, packaging requirement and expected delivery schedule so we can check feasibility and sample options.";
+    if(type === "supplier") return "Please confirm whether you can make a sample, share recent photos of similar products, and advise current capacity and estimated lead time.";
+    if(tags.indexOf("diffuser") >= 0) return "Please confirm stick diameter, length, packaging format, target quantity, and any requirement for absorption, drying or mold control.";
+    return "Noted. We will review the product direction, technical requirements, sourcing feasibility and next steps.";
+  }
+
+  function saveDrop(urgent){
+    var text = $("rawText").value.trim(), link = $("linkUrl").value.trim();
+    if(!text && !imageData && !link){ showResult("Nothing to save.", null); return; }
+    var raw = [text,link,$("linkTitle").value].join(" ");
+    var local = localClassify(raw);
+    var record = {
+      id:uid(),created_at:new Date().toISOString(),input_type:mode,raw_text:text,image:imageData,link_url:link,link_title:$("linkTitle").value.trim(),
+      guessed_type:local.guessed_type,auto_tags:local.auto_tags,auto_summary:local.auto_summary,next_action:local.next_action,priority:urgent ? "urgent" : local.priority,status:"raw",source:"local",
+      deal_stage:local.deal_stage,buyer_need:local.buyer_need,supplier_risk:local.supplier_risk,qc_risk:local.qc_risk,product_family:local.product_family,proposal_fit:local.proposal_fit,
+      follow_up_questions:local.follow_up_questions,reply_draft:local.reply_draft,similar:findSimilar(local.auto_tags)
+    };
+    records.unshift(record); persist(); showResult(endpoint ? "Saved. Sent to backend." : "Saved locally.", record); $("outputBox").textContent = brief(record);
+    if(endpoint) postToBackend(record);
+    clearForm(false);
+  }
+
+  function findSimilar(tags){
+    if(!tags || !tags.length) return [];
+    return records.filter(function(r){
+      var hit = (r.auto_tags || []).some(function(t){ return tags.indexOf(t) >= 0; });
+      return hit;
+    }).slice(0,3).map(function(r){ return r.auto_summary; });
+  }
+
+  function postToBackend(record){
+    var payload = JSON.stringify({action:"saveDrop",token:appToken,record:record});
+    var form = document.createElement("form");
+    form.method = "POST"; form.action = endpoint; form.target = "pefsoHiddenFrame"; form.style.display = "none";
+    var input = document.createElement("input"); input.name = "payload"; input.value = payload;
+    form.appendChild(input); document.body.appendChild(form); form.submit();
+    setTimeout(function(){ try{document.body.removeChild(form);}catch(e){} }, 1000);
+  }
+
+  function clearForm(hideResult){ imageData=""; $("photoPreview").src=""; $("photoPreview").classList.add("hidden"); $("photoText").classList.remove("hidden"); $("photoInput").value=""; $("rawText").value=""; $("linkUrl").value=""; $("linkTitle").value=""; if(hideResult) $("resultBox").classList.remove("show"); }
+  function showResult(title,item){
+    var box=$("resultBox"); if(!item){box.innerHTML=esc(title);box.classList.add("show");return;}
+    var qs=(item.follow_up_questions||[]).map(function(q){return "<li>"+esc(q)+"</li>";}).join("");
+    var sim=(item.similar||[]).map(function(s){return "<li>"+esc(s)+"</li>";}).join("");
+    box.innerHTML="<b>"+esc(title)+"</b><div style='margin-top:6px'>"+esc(item.auto_summary)+"</div><div style='margin-top:6px'>"+esc(item.next_action)+"</div><div class='chips'>"+chips(item.auto_tags,item.priority,item.source)+"</div>"+
+      "<div class='reward'><div class='reward-box'><b>Ask next</b><ol>"+qs+"</ol></div><div class='reward-box'><b>Reply draft</b><div class='reply'>"+esc(item.reply_draft)+"</div><div class='actions'><button class='btn light' type='button' onclick='navigator.clipboard && navigator.clipboard.writeText("+JSON.stringify(item.reply_draft)+")'>Copy reply</button></div></div>"+
+      (sim ? "<div class='reward-box'><b>Similar memory</b><ol>"+sim+"</ol></div>" : "")+"</div>";
+    box.classList.add("show");
+  }
+  function brief(item){ return ["[PEFSO DROP]","ID: "+item.id,"Date: "+fmt(item.created_at),"Input: "+item.input_type,"Type: "+item.guessed_type,"Priority: "+item.priority,"Summary: "+item.auto_summary,"Action: "+item.next_action,"Ask next: "+(item.follow_up_questions||[]).join(" | "),"Reply: "+(item.reply_draft||""),"Text: "+(item.raw_text||""),"Link: "+(item.link_url||""),"Tags: "+(item.auto_tags||[]).join(", "),"Source: "+(item.source||"local")].join("\n"); }
+  function tsv(list){ var header="id\tcreated_at\tinput_type\tguessed_type\tpriority\tauto_summary\tnext_action\traw_text\tlink_url\ttags\tsource\tdeal_stage\tbuyer_need\tsupplier_risk\tqc_risk\tproduct_family\tproposal_fit\tfollow_up_questions\treply_draft"; var rows=list.map(function(x){ return [x.id,x.created_at,x.input_type,x.guessed_type,x.priority,x.auto_summary,x.next_action,x.raw_text||"",x.link_url||"",(x.auto_tags||[]).join(", "),x.source||"",x.deal_stage||"",x.buyer_need||"",x.supplier_risk||"",x.qc_risk||"",x.product_family||"",x.proposal_fit||"",(x.follow_up_questions||[]).join(" | "),x.reply_draft||""].map(clean).join("\t"); }); return [header].concat(rows).join("\n"); }
+  function clean(s){ return String(s||"").replace(/[\t\n\r]+/g," "); }
+  function fmt(iso){ try{return new Date(iso).toLocaleString("vi-VN",{hour12:false});}catch(e){return iso||"";} }
+  function chips(tags,priority,source){ var html=(tags||[]).map(function(t){return "<span class='chip'>"+esc(t)+"</span>";}).join(""); if(priority==="urgent") html+="<span class='chip red'>urgent</span>"; if(source==="gemini") html+="<span class='chip blue'>gemini</span>"; return html; }
+  function copy(text){ if(navigator.clipboard) navigator.clipboard.writeText(text).catch(function(){}); }
+
+  function render(){ renderRecords(); renderStats(); updateStatus(); }
+  function renderRecords(){ var q=norm($("searchInput").value); var list=records.filter(function(r){ var hay=norm([r.raw_text,r.link_url,r.link_title,r.guessed_type,r.auto_summary,r.next_action,(r.auto_tags||[]).join(" "),r.priority,r.source,r.reply_draft].join(" ")); return !q || hay.indexOf(q)>=0; }); $("recordList").innerHTML=list.map(card).join(""); $("emptyBox").classList.toggle("hidden", list.length>0); }
+  function card(r){ var img=r.image ? "<img src='"+r.image+"' alt=''>" : (r.input_type==="photo"?"IMG":r.input_type==="link"?"URL":"TXT"); return "<div class='record'><div class='thumb'>"+img+"</div><div><h3>"+esc(r.auto_summary)+"</h3><div class='meta'>"+esc(fmt(r.created_at))+" · "+esc(r.priority)+" · "+esc(r.source||"local")+"</div><div class='note'>"+esc(r.raw_text||r.link_url||"")+"</div><div>"+chips((r.auto_tags||[]).slice(0,3),r.priority==="urgent"?"urgent":"",r.source==="gemini"?"gemini":"")+"</div></div></div>"; }
+  function renderStats(){ $("totalCount").textContent=records.length; $("urgentCount").textContent=records.filter(function(x){return x.priority==="urgent";}).length; $("productCount").textContent=records.filter(function(x){return x.guessed_type==="product";}).length; $("supplierCount").textContent=records.filter(function(x){return x.guessed_type==="supplier";}).length; }
+  function updateStatus(){ endpoint=localStorage.getItem(ENDPOINT_KEY)||endpoint; appToken=localStorage.getItem(TOKEN_KEY)||appToken; $("endpointInput").value=endpoint; $("tokenInput").value=appToken; $("backendStatus").textContent=endpoint ? "Backend: configured" : "Backend: local only"; }
+
+  function compress(file,done){ var reader=new FileReader(); reader.onload=function(ev){ var img=new Image(); img.onload=function(){ var max=900,w=img.width,h=img.height; if(w>h&&w>max){h=Math.round(h*max/w);w=max;} else if(h>=w&&h>max){w=Math.round(w*max/h);h=max;} var canvas=document.createElement("canvas"); canvas.width=w; canvas.height=h; canvas.getContext("2d").drawImage(img,0,0,w,h); done(canvas.toDataURL("image/jpeg",0.70)); }; img.src=ev.target.result; }; reader.readAsDataURL(file); }
+  function exportJson(){ var blob=new Blob([JSON.stringify(records,null,2)],{type:"application/json"}); var url=URL.createObjectURL(blob); var a=document.createElement("a"); a.href=url; a.download="pefso-drop-"+new Date().toISOString().slice(0,10)+".json"; a.click(); URL.revokeObjectURL(url); }
+
+  document.querySelectorAll("[data-mode]").forEach(function(btn){ btn.addEventListener("click",function(){ setMode(btn.getAttribute("data-mode")); }); });
+  $("photoInput").addEventListener("change",function(e){ var file=e.target.files&&e.target.files[0]; if(!file)return; compress(file,function(dataUrl){ imageData=dataUrl; $("photoPreview").src=imageData; $("photoPreview").classList.remove("hidden"); $("photoText").classList.add("hidden"); }); });
+  $("saveBtn").addEventListener("click",function(){ saveDrop(false); });
+  $("urgentBtn").addEventListener("click",function(){ saveDrop(true); });
+  $("clearBtn").addEventListener("click",function(){ clearForm(true); });
+  $("searchInput").addEventListener("input",renderRecords);
+  $("copyLatestBtn").addEventListener("click",function(){ if(records.length){ var text=brief(records[0]); $("outputBox").textContent=text; copy(text); } });
+  $("copyReplyBtn").addEventListener("click",function(){ if(records.length){ var text=records[0].reply_draft || ""; $("outputBox").textContent=text; copy(text); } });
+  $("copyTsvBtn").addEventListener("click",function(){ var text=tsv(records); $("outputBox").textContent=text; copy(text); });
+  $("exportBtn").addEventListener("click",exportJson);
+  $("toggleConfigBtn").addEventListener("click",function(){ $("configBox").classList.toggle("show"); });
+  $("saveEndpointBtn").addEventListener("click",function(){ localStorage.setItem(ENDPOINT_KEY,$("endpointInput").value.trim()); localStorage.setItem(TOKEN_KEY,$("tokenInput").value.trim()); updateStatus(); });
+  $("clearEndpointBtn").addEventListener("click",function(){ localStorage.removeItem(ENDPOINT_KEY); localStorage.removeItem(TOKEN_KEY); updateStatus(); });
+  $("testSendBtn").addEventListener("click",function(){ var record={id:uid(),created_at:new Date().toISOString(),input_type:"note",raw_text:"TEST - Xưởng Thái Bình làm decor rattan nhưng tháng 12 quá tải, rủi ro làm ẩu.",image:"",link_url:"",link_title:"",guessed_type:"supplier",auto_tags:["test","supplier","rattan"],auto_summary:"TEST Supplier · rattan / qc-risk",next_action:"Check if this test row appears in Google Sheet.",priority:"urgent",status:"raw",source:"local-test",follow_up_questions:["Check sheet raw_drops.","Check Apps Script executions.","Check Drive image folder."],reply_draft:"This is a backend test row."}; if(endpoint){ postToBackend(record); $("outputBox").textContent="Test sent. Check raw_drops sheet after 5-15 seconds."; } else { $("outputBox").textContent="No backend URL configured."; } });
+  document.querySelectorAll(".bottom button").forEach(function(btn){ btn.addEventListener("click",function(){ document.querySelectorAll(".bottom button").forEach(function(x){x.classList.remove("active");}); btn.classList.add("active"); document.querySelectorAll(".tab").forEach(function(t){t.classList.remove("active");}); $(btn.getAttribute("data-tab")).classList.add("active"); }); });
+  render();
+})();
+</script>
+</body>
+</html>
