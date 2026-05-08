@@ -4,6 +4,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PEFSO Sales Kit Builder</title>
+  <!-- PEFSO mobile/PWA install tags -->
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/pefso-icon-180.png">
+  <meta name="theme-color" content="#ED7A1A">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="PEFSO Kit">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
   <style>
     :root{
       --bg:#fbf5ec;--card:#fffaf3;--paper:#fff;--ink:#133d35;--muted:#68746d;--line:#eadcc8;
@@ -704,5 +714,16 @@
   init();
 })();
 </script>
+<!-- PEFSO service worker registration -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('./sw.js').catch(function (err) {
+      console.log('PEFSO service worker registration failed:', err);
+    });
+  });
+}
+</script>
+
 </body>
 </html>
