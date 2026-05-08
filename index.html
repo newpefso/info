@@ -30,6 +30,7 @@
     .brand-logo{height:42px;min-width:42px;border-radius:15px;background:var(--orange);color:#fff;display:flex;align-items:center;justify-content:center;font-size:25px;font-weight:900;overflow:hidden;padding:0 10px}
     .brand-logo img{height:100%;max-width:120px;object-fit:contain}
     h1{font-size:19px;margin:0;letter-spacing:-.02em}.sub{font-size:12px;color:var(--muted);margin-top:3px}
+    #quoteLine{font-style:italic;max-width:560px;white-space:normal;line-height:1.35}
     .app{max-width:1180px;margin:auto;padding:14px 16px 90px}
     .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
     .tab-btn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 12px;font-weight:850;color:var(--ink)}
@@ -121,13 +122,12 @@
   <div class="head">
     <div class="brand">
       <div class="brand-logo" id="brandLogo">pefso</div>
-      <div><h1>PEFSO Sales Kit Builder</h1><div class="sub">Tạo proposal + matrix theo khách</div></div>
+      <div><h1>PEFSO Sales Kit Builder</h1><div class="sub" id="quoteLine">Natural materials, thoughtful trade.</div></div>
     </div>
     <div class="tabs">
       <button class="tab-btn active" data-tab="builderTab">Tạo Sales Kit</button>
       <button class="tab-btn" data-tab="productsTab">Sản phẩm</button>
       <button class="tab-btn" data-tab="notesTab">Ghi nhận thị trường</button>
-      <button class="tab-btn" data-tab="adminTab">Cấu hình</button>
     </div>
   </div>
 </header>
@@ -209,21 +209,6 @@
     </div>
     <div class="card"><h2>Ghi nhận gần đây</h2><div class="notes-grid" id="recentNotes"></div></div>
   </section>
-
-  <section class="tab" id="adminTab">
-    <div class="card">
-      <h2>Cấu hình</h2>
-      <p>Dán Web App URL từ Apps Script. Khi đưa lên GitHub có thể hardcode ở đầu file index.html.</p>
-      <label>Apps Script Web App URL</label><input id="endpointInput" placeholder="https://script.google.com/macros/s/.../exec">
-      <label>APP_TOKEN nếu có</label><input id="tokenInput">
-      <div class="actions">
-        <button class="btn" id="saveConfigBtn">Lưu cấu hình</button>
-        <button class="btn light" id="reloadDataBtn">Tải lại dữ liệu</button>
-        <button class="btn light" id="testBackendBtn">Test backend</button>
-      </div>
-      <div class="status" id="adminStatus"></div>
-    </div>
-  </section>
 </main>
 
 <iframe name="hiddenFrame" class="hidden-frame"></iframe>
@@ -238,10 +223,8 @@
   var DEFAULT_TOKEN = "";
   /* ================== HẾT CẤU HÌNH ================== */
 
-  var ENDPOINT_KEY = "pefso_saleskit_endpoint";
-  var TOKEN_KEY = "pefso_saleskit_token";
-  var endpoint = localStorage.getItem(ENDPOINT_KEY) || (DEFAULT_ENDPOINT.indexOf("http") === 0 ? DEFAULT_ENDPOINT : "");
-  var appToken = localStorage.getItem(TOKEN_KEY) || DEFAULT_TOKEN || "";
+  var endpoint = (DEFAULT_ENDPOINT.indexOf("http") === 0 ? DEFAULT_ENDPOINT : "");
+  var appToken = DEFAULT_TOKEN || "";
   var products = [];
   var brand = {};
   var selectedIds = new Set();
@@ -292,9 +275,31 @@
     setTimeout(function(){ try{document.body.removeChild(form);}catch(e){} }, 1000);
   }
 
+  function setQuote(){
+    var quotes = [
+      "Natural materials carry the memory of the land and the discipline of the maker.",
+      "Good trade begins where honest materials meet patient craftsmanship.",
+      "The strongest supply chains are built from trust, texture and time.",
+      "A handmade product is not old-fashioned; it is a slower kind of intelligence.",
+      "In natural materials, beauty comes from restraint, consistency and care.",
+      "Every sample is a small promise: if we can make it well once, we can make it better together.",
+      "Sustainable products are not only about materials; they are about responsibility from source to shipment.",
+      "Quiet craftsmanship can travel farther than loud marketing.",
+      "The future of natural goods belongs to those who can make beauty repeatable.",
+      "From raw fiber to finished form, value is created by disciplined hands.",
+      "A reliable product is a conversation between material, maker and market.",
+      "The best catalogues do not just show products; they show what a company is capable of becoming.",
+      "When the material is honest, the design should be clear.",
+      "Small details decide whether a sample becomes a shipment.",
+      "Natural texture is not decoration; it is evidence of origin."
+    ];
+    var index = Math.floor(Math.random() * quotes.length);
+    var el = $("quoteLine");
+    if(el) el.textContent = quotes[index];
+  }
+
   function init(){
-    $("endpointInput").value = endpoint;
-    $("tokenInput").value = appToken;
+    setQuote();
     renderModes();
     bindEvents();
     loadData();
@@ -302,9 +307,6 @@
 
   function bindEvents(){
     document.querySelectorAll(".tab-btn").forEach(function(b){ b.addEventListener("click", function(){ switchTab(b.getAttribute("data-tab")); }); });
-    $("saveConfigBtn").addEventListener("click", saveConfig);
-    $("reloadDataBtn").addEventListener("click", loadData);
-    $("testBackendBtn").addEventListener("click", function(){ jsonp("ping", {}, function(r){ $("adminStatus").textContent = r.ok ? "Backend OK" : ("Lỗi: " + r.error); }); });
     $("suggestBtn").addEventListener("click", suggestProducts);
     $("buildBtn").addEventListener("click", buildSalesKit);
     $("clearSelectionBtn").addEventListener("click", function(){ selectedIds.clear(); selectedCoverUrl = ""; renderSuggestedProducts(); });
@@ -319,23 +321,16 @@
   }
 
   function switchTab(id){
+    if(!$(id)) return;
     document.querySelectorAll(".tab").forEach(function(t){ t.classList.remove("active"); });
     document.querySelectorAll(".tab-btn").forEach(function(b){ b.classList.remove("active"); });
     $(id).classList.add("active");
-    document.querySelector('[data-tab="'+id+'"]').classList.add("active");
-  }
-
-  function saveConfig(){
-    endpoint = $("endpointInput").value.trim();
-    appToken = $("tokenInput").value.trim();
-    localStorage.setItem(ENDPOINT_KEY, endpoint);
-    localStorage.setItem(TOKEN_KEY, appToken);
-    $("adminStatus").textContent = "Đã lưu cấu hình.";
-    loadData();
+    var btn = document.querySelector('[data-tab="'+id+'"]');
+    if(btn) btn.classList.add("active");
   }
 
   function loadData(){
-    if(!endpoint){ $("suggestStatus").textContent = "Chưa cấu hình backend. Vào tab Cấu hình."; return; }
+    if(!endpoint){ $("suggestStatus").textContent = "Chưa kết nối được dữ liệu sản phẩm. Vui lòng kiểm tra backend."; return; }
     $("suggestStatus").textContent = "Đang tải Product Master...";
     jsonp("getAppData", {}, function(res){
       if(!res.ok){ $("suggestStatus").textContent = "Lỗi tải dữ liệu: " + res.error; return; }
