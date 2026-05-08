@@ -71,7 +71,7 @@
     .proposal-product .pimg{width:100%;height:160px;margin-bottom:10px}
     .proposal-product h3{font-size:16px;margin:0 0 6px;color:var(--green)}
     .product-specs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
-    .spec{border:1px solid #eadcc8;background:#fff;border-radius:12px;padding:7px}
+    .spec{border:1px solid #eadcc8;background:#fff;border-radius:12px;padding:7px;min-height:46px}
     .spec small{display:block;font-size:9px;letter-spacing:.04em;text-transform:uppercase;color:#7b857d;font-weight:800}
     .spec b{display:block;font-size:12px;color:#153d35;margin-top:2px;line-height:1.25}
     .status-badge{display:inline-flex;border-radius:999px;padding:4px 8px;font-size:10px;font-weight:900;letter-spacing:.02em;margin:0 4px 6px 0;border:1px solid #e6d4be;background:#fff;color:#5f513f}
@@ -88,6 +88,9 @@
     .contact-line b{color:#153d35}
     .nextstep-list{margin:0;padding-left:18px}
     .nextstep-list li{font-size:14px;line-height:1.55;color:#405149;margin:6px 0}
+    .matrix-table{font-size:11px}
+    .matrix-table td,.matrix-table th{line-height:1.32}
+
     table{width:100%;border-collapse:collapse;font-size:12px}
     th{background:#153d35;color:#fff;text-align:left;padding:9px;border:1px solid #153d35}
     td{padding:8px;border:1px solid #eadcc8;vertical-align:top;line-height:1.35}
@@ -112,7 +115,7 @@
       <button class="tab-btn active" data-tab="builderTab">Tạo Sales Kit</button>
       <button class="tab-btn" data-tab="productsTab">Sản phẩm</button>
       <button class="tab-btn" data-tab="notesTab">Ghi nhận thị trường</button>
-      <!-- Cấu hình đã ẩn khỏi giao diện người dùng. Endpoint Apps Script vẫn giữ nguyên trong code. -->
+      <button class="tab-btn" data-tab="adminTab" style="display:none!important">Cấu hình</button>
     </div>
   </div>
 </header>
@@ -149,7 +152,7 @@
       <div>
         <div class="card">
           <h2>3. Chọn sản phẩm</h2>
-          <p>Tích/bỏ tích, tìm thêm sản phẩm nếu muốn. Proposal/matrix sẽ hiển thị ảnh, trạng thái Current/Potential, MOQ, Unit và Lead time.</p>
+          <p>Tích/bỏ tích, tìm thêm sản phẩm nếu muốn. Proposal/matrix sẽ hiển thị ảnh, Current/Potential, MOQ, Unit và Lead time.</p>
           <input id="productSearch" placeholder="Tìm sản phẩm để thêm...">
           <div class="product-grid" id="productGrid"></div>
           <div class="actions">
@@ -461,9 +464,9 @@
     (sel.length>6?'<section class="slide"><h2 class="section-title">Additional Product Options</h2><div class="proposal-products">'+sel.slice(6,12).map(proposalProductCard).join("")+'</div></section>':'')+
     '<section class="slide"><h2 class="section-title">Product Matrix</h2>'+matrixTable(sel)+'</section>'+
     fieldEvidenceSlide(sel)+
-    '<section class="slide"><h2 class="section-title">Customization & Next Steps</h2>'+ 
-    '<div class="two-col"><div class="box"><h3>Customization Options</h3><ul><li>Material, size, shape and finishing adaptation.</li><li>Packaging format and buyer branding direction.</li><li>Sample development based on target use case.</li></ul></div><div class="box"><h3>Next Steps</h3><ul class="nextstep-list"><li>Confirm preferred product directions.</li><li>Share target specification, quantity, packaging and expected timeline.</li><li>PEFSO will check quotation feasibility, sampling route and production lead time.</li></ul></div></div>'+ 
-    contactPanel()+ 
+    '<section class="slide"><h2 class="section-title">Customization & Next Steps</h2>'+
+    '<div class="two-col"><div class="box"><h3>Customization Options</h3><ul><li>Material, size, shape and finishing adaptation.</li><li>Packaging format and buyer branding direction.</li><li>Sample development based on target use case.</li></ul></div><div class="box"><h3>Next Steps</h3><ul class="nextstep-list"><li>Confirm preferred product directions.</li><li>Share target specification, quantity, packaging and expected timeline.</li><li>PEFSO will check quotation feasibility, sampling route and production lead time.</li></ul></div></div>'+
+    contactPanel()+
     '</section>';
   }
 
@@ -494,21 +497,20 @@
   function proposalProductCard(p){
     var imgUrl = p.image_main || p.main_square_url || '';
     var img = imgUrl ? '<img src="'+esc(imgUrl)+'">' : 'IMAGE';
-    var status = statusBadge(p);
-    var note = productionNote(p);
-    return '<div class="proposal-product"><div class="pimg">'+img+'</div>'+ 
-      '<div>'+status+'</div>'+ 
-      '<h3>'+esc(p.product_name_en||"")+'</h3>'+ 
-      '<p style="font-size:12px;line-height:1.45;color:#405149">'+esc(p.short_description_en||p.use_case_en||"")+'</p>'+ 
-      '<div class="product-specs">'+ 
-        specBox("Material", p.material || "-")+ 
-        specBox("Unit", unitText(p))+ 
-        specBox("MOQ", moqText(p))+ 
-        specBox("Lead time", leadTimeText(p))+ 
-      '</div>'+ 
-      '<div class="status-note">'+esc(note)+'</div>'+ 
+    return '<div class="proposal-product"><div class="pimg">'+img+'</div>'+
+      '<div>'+statusBadge(p)+'</div>'+
+      '<h3>'+esc(p.product_name_en||"")+'</h3>'+
+      '<p style="font-size:12px;line-height:1.45;color:#405149">'+esc(p.short_description_en||p.use_case_en||"")+'</p>'+
+      '<div class="product-specs">'+
+        specBox("Material", p.material || "-")+
+        specBox("Unit", unitText(p))+
+        specBox("MOQ", moqText(p))+
+        specBox("Lead time", leadTimeText(p))+
+      '</div>'+
+      '<div class="status-note">'+esc(productionNote(p))+'</div>'+
       '</div>';
   }
+
 
   function fieldEvidenceSlide(sel){
     var imgs = [];
@@ -523,23 +525,24 @@
   }
 
   function matrixTable(sel){
-    return '<div class="matrix-note"><b>Production note:</b> Current products can usually move faster to quotation or sampling based on confirmed specifications. Potential/custom products may require reference images, target size, finishing standard, quantity, packaging and sample development discussion before firm quotation.</div>'+ 
-      '<table><thead><tr>'+ 
-      '<th>Product</th><th>Status</th><th>Material</th><th>Use Case</th><th>Why Recommended</th><th>Unit</th><th>MOQ</th><th>Lead Time</th><th>Supply / Buyer Cooperation Note</th>'+ 
-      '</tr></thead><tbody>'+ 
-      sel.map(function(p){ return '<tr>'+ 
-        '<td><b>'+esc(p.product_name_en||"")+'</b><br><span style="color:#68746d">'+esc(p.product_id||"")+'</span></td>'+ 
-        '<td>'+statusBadge(p)+'</td>'+ 
-        '<td>'+esc(p.material||"")+'</td>'+ 
-        '<td>'+esc(p.use_case_en||"")+'</td>'+ 
-        '<td>'+esc(whyRecommendedEn(p))+'</td>'+ 
-        '<td>'+esc(unitText(p))+'</td>'+ 
-        '<td>'+esc(moqText(p))+'</td>'+ 
-        '<td>'+esc(leadTimeText(p))+'</td>'+ 
-        '<td>'+esc(productionNote(p))+'</td>'+ 
-      '</tr>'; }).join("")+ 
+    return '<div class="matrix-note"><b>Production note:</b> Current products can usually move faster to quotation or sampling once specification, quantity and packaging are confirmed. Potential/custom products may require reference images, target size, finishing standard, quantity and sample development discussion before firm quotation.</div>'+
+      '<table class="matrix-table"><thead><tr>'+
+      '<th>Product</th><th>Status</th><th>Material</th><th>Use Case</th><th>Why Recommended</th><th>Unit</th><th>MOQ</th><th>Lead Time</th><th>Supply / Buyer Cooperation Note</th>'+
+      '</tr></thead><tbody>'+
+      sel.map(function(p){ return '<tr>'+
+        '<td><b>'+esc(p.product_name_en||"")+'</b><br><span style="color:#68746d">'+esc(p.product_id||"")+'</span></td>'+
+        '<td>'+statusBadge(p)+'</td>'+
+        '<td>'+esc(p.material||"")+'</td>'+
+        '<td>'+esc(p.use_case_en||"")+'</td>'+
+        '<td>'+esc(whyRecommendedEn(p))+'</td>'+
+        '<td>'+esc(unitText(p))+'</td>'+
+        '<td>'+esc(moqText(p))+'</td>'+
+        '<td>'+esc(leadTimeText(p))+'</td>'+
+        '<td>'+esc(productionNote(p))+'</td>'+
+      '</tr>'; }).join("")+
       '</tbody></table>';
   }
+
 
   function whyRecommendedEn(p){
     if(currentMode === "component_material_supply") return "Relevant for specification-based sourcing, stable supply and repeat production.";
@@ -550,7 +553,7 @@
   }
 
   function matrixTsv(sel){
-    var header = ["Product","Status","Material","Use Case","Why Recommended","Unit","MOQ","Lead Time","Supply / Buyer Cooperation Note","Customization Options","Product ID"].join("	");
+    var header = ["Product","Status","Material","Use Case","Why Recommended","Unit","MOQ","Lead Time","Supply / Buyer Cooperation Note","Customization Options","Product ID"].join("\t");
     var rows = sel.map(function(p){ return [
       p.product_name_en,
       statusText(p),
@@ -563,14 +566,8 @@
       productionNote(p),
       p.customization_options_en,
       p.product_id
-    ].map(function(x){ return String(x||"").replace(/[	
-]+/g," "); }).join("	"); });
-    return [header].concat(rows).join("
-");
-  }
-
-  function specBox(label, value){
-    return '<div class="spec"><small>'+esc(label)+'</small><b>'+esc(value || "-")+'</b></div>';
+    ].map(function(x){ return String(x||"").replace(/[\t\r\n]+/g," "); }).join("\t"); });
+    return [header].concat(rows).join("\n");
   }
 
   function statusText(p){
@@ -585,6 +582,10 @@
     var s = statusText(p);
     var cls = s.toLowerCase() === "current" ? "status-current" : (s.toLowerCase() === "potential" ? "status-potential" : "");
     return '<span class="status-badge '+cls+'">'+esc(s)+'</span>';
+  }
+
+  function specBox(label, value){
+    return '<div class="spec"><small>'+esc(label)+'</small><b>'+esc(value || "To be confirmed")+'</b></div>';
   }
 
   function unitText(p){
@@ -609,13 +610,14 @@
   function productionNote(p){
     var status = statusText(p).toLowerCase();
     if(status === "current"){
-      return "Available as a current PEFSO direction. Quotation can be prepared faster after confirming specification, quantity and packaging.";
+      return "Current PEFSO direction. Quotation can be prepared faster after confirming specification, quantity and packaging.";
     }
     if(status === "potential"){
-      return "Potential/custom direction. Requires reference sample, target specification, finishing standard and quantity before firm quotation.";
+      return "Potential/custom direction. Reference sample, target specification, finishing standard and quantity should be discussed before firm quotation.";
     }
     return "Production feasibility, quotation and sample timeline should be confirmed after reviewing buyer specification and target quantity.";
   }
+
 
   function contactBlock(){
     return [
@@ -626,6 +628,7 @@
       brand.address || "Kieu Ky - Gia Lam - Hanoi - Vietnam"
     ].filter(Boolean).map(esc).join(" · ");
   }
+
 
   function contactPanel(){
     var name = brand.contact_name || "Thang MQ";
