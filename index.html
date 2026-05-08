@@ -70,6 +70,24 @@
     .proposal-product{border:1px solid #eadcc8;border-radius:22px;padding:12px;background:#fffaf3}
     .proposal-product .pimg{width:100%;height:160px;margin-bottom:10px}
     .proposal-product h3{font-size:16px;margin:0 0 6px;color:var(--green)}
+    .product-specs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
+    .spec{border:1px solid #eadcc8;background:#fff;border-radius:12px;padding:7px}
+    .spec small{display:block;font-size:9px;letter-spacing:.04em;text-transform:uppercase;color:#7b857d;font-weight:800}
+    .spec b{display:block;font-size:12px;color:#153d35;margin-top:2px;line-height:1.25}
+    .status-badge{display:inline-flex;border-radius:999px;padding:4px 8px;font-size:10px;font-weight:900;letter-spacing:.02em;margin:0 4px 6px 0;border:1px solid #e6d4be;background:#fff;color:#5f513f}
+    .status-current{background:#eaf7ef;border-color:#bfe4cc;color:#145437}
+    .status-potential{background:#fff3df;border-color:#ffd2a1;color:#8b4206}
+    .status-note{font-size:11px;line-height:1.4;color:#6b746e;margin-top:8px;border-left:3px solid var(--orange);padding-left:8px}
+    .matrix-note{font-size:12px;color:#405149;line-height:1.45;margin:0 0 14px;background:#fffaf3;border:1px solid #eadcc8;border-radius:16px;padding:12px}
+    .contact-panel{display:grid;grid-template-columns:1fr 1.1fr;gap:18px;align-items:stretch;margin-top:26px}
+    .contact-card{border:1px solid #eadcc8;background:#fffaf3;border-radius:26px;padding:22px}
+    .contact-card h3{font-size:22px;margin:0 0 8px;color:#153d35}
+    .contact-card p{font-size:14px;line-height:1.55;color:#405149;margin:0 0 10px}
+    .contact-list{display:grid;gap:8px;margin-top:12px}
+    .contact-line{display:grid;grid-template-columns:92px 1fr;gap:10px;border-bottom:1px solid #eadcc8;padding-bottom:7px;font-size:13px;color:#405149}
+    .contact-line b{color:#153d35}
+    .nextstep-list{margin:0;padding-left:18px}
+    .nextstep-list li{font-size:14px;line-height:1.55;color:#405149;margin:6px 0}
     table{width:100%;border-collapse:collapse;font-size:12px}
     th{background:#153d35;color:#fff;text-align:left;padding:9px;border:1px solid #153d35}
     td{padding:8px;border:1px solid #eadcc8;vertical-align:top;line-height:1.35}
@@ -94,7 +112,7 @@
       <button class="tab-btn active" data-tab="builderTab">Tạo Sales Kit</button>
       <button class="tab-btn" data-tab="productsTab">Sản phẩm</button>
       <button class="tab-btn" data-tab="notesTab">Ghi nhận thị trường</button>
-      <button class="tab-btn" data-tab="adminTab">Cấu hình</button>
+      <!-- Cấu hình đã ẩn khỏi giao diện người dùng. Endpoint Apps Script vẫn giữ nguyên trong code. -->
     </div>
   </div>
 </header>
@@ -131,7 +149,7 @@
       <div>
         <div class="card">
           <h2>3. Chọn sản phẩm</h2>
-          <p>Tích/bỏ tích, tìm thêm sản phẩm nếu muốn. Sản phẩm cần có ảnh trong Product Master để proposal đẹp.</p>
+          <p>Tích/bỏ tích, tìm thêm sản phẩm nếu muốn. Proposal/matrix sẽ hiển thị ảnh, trạng thái Current/Potential, MOQ, Unit và Lead time.</p>
           <input id="productSearch" placeholder="Tìm sản phẩm để thêm...">
           <div class="product-grid" id="productGrid"></div>
           <div class="actions">
@@ -165,7 +183,7 @@
     <div class="card"><h2>Ghi nhận gần đây</h2><div class="notes-grid" id="recentNotes"></div></div>
   </section>
 
-  <section class="tab" id="adminTab">
+  <section class="tab" id="adminTab" style="display:none!important">
     <div class="card">
       <h2>Cấu hình</h2>
       <p>Dán Web App URL từ Apps Script. Khi đưa lên GitHub có thể hardcode ở đầu file index.html.</p>
@@ -443,7 +461,10 @@
     (sel.length>6?'<section class="slide"><h2 class="section-title">Additional Product Options</h2><div class="proposal-products">'+sel.slice(6,12).map(proposalProductCard).join("")+'</div></section>':'')+
     '<section class="slide"><h2 class="section-title">Product Matrix</h2>'+matrixTable(sel)+'</section>'+
     fieldEvidenceSlide(sel)+
-    '<section class="slide"><h2 class="section-title">Customization & Next Steps</h2><div class="two-col"><div class="box"><h3>Customization Options</h3><ul><li>Material, size, shape and finishing adaptation.</li><li>Packaging format and buyer branding direction.</li><li>Sample development based on target use case.</li></ul></div><div class="box"><h3>Next Steps</h3><ul><li>Confirm preferred product directions.</li><li>Define sample specifications, quantity and packaging.</li><li>Align target timeline for sample and pilot order.</li></ul></div></div><div style="position:absolute;bottom:46px;left:58px;right:58px;color:#68746d;font-size:14px">'+contactBlock()+'</div></section>';
+    '<section class="slide"><h2 class="section-title">Customization & Next Steps</h2>'+ 
+    '<div class="two-col"><div class="box"><h3>Customization Options</h3><ul><li>Material, size, shape and finishing adaptation.</li><li>Packaging format and buyer branding direction.</li><li>Sample development based on target use case.</li></ul></div><div class="box"><h3>Next Steps</h3><ul class="nextstep-list"><li>Confirm preferred product directions.</li><li>Share target specification, quantity, packaging and expected timeline.</li><li>PEFSO will check quotation feasibility, sampling route and production lead time.</li></ul></div></div>'+ 
+    contactPanel()+ 
+    '</section>';
   }
 
   function titleFor(buyer){
@@ -471,8 +492,22 @@
     return p ? (p.image_main || p.main_square_url) : ""; 
   }
   function proposalProductCard(p){
-    var imgUrl = p.image_main || p.main_square_url || ''; var img = imgUrl ? '<img src="'+esc(imgUrl)+'">' : 'IMAGE';
-    return '<div class="proposal-product"><div class="pimg">'+img+'</div><h3>'+esc(p.product_name_en||"")+'</h3><p style="font-size:12px;line-height:1.45;color:#405149">'+esc(p.short_description_en||p.use_case_en||"")+'</p><p style="font-size:12px;color:#68746d"><b>Material:</b> '+esc(p.material||"")+'</p></div>';
+    var imgUrl = p.image_main || p.main_square_url || '';
+    var img = imgUrl ? '<img src="'+esc(imgUrl)+'">' : 'IMAGE';
+    var status = statusBadge(p);
+    var note = productionNote(p);
+    return '<div class="proposal-product"><div class="pimg">'+img+'</div>'+ 
+      '<div>'+status+'</div>'+ 
+      '<h3>'+esc(p.product_name_en||"")+'</h3>'+ 
+      '<p style="font-size:12px;line-height:1.45;color:#405149">'+esc(p.short_description_en||p.use_case_en||"")+'</p>'+ 
+      '<div class="product-specs">'+ 
+        specBox("Material", p.material || "-")+ 
+        specBox("Unit", unitText(p))+ 
+        specBox("MOQ", moqText(p))+ 
+        specBox("Lead time", leadTimeText(p))+ 
+      '</div>'+ 
+      '<div class="status-note">'+esc(note)+'</div>'+ 
+      '</div>';
   }
 
   function fieldEvidenceSlide(sel){
@@ -488,8 +523,21 @@
   }
 
   function matrixTable(sel){
-    return '<table><thead><tr><th>Product</th><th>Material</th><th>Use Case</th><th>Why Recommended</th><th>MOQ</th><th>Lead Time</th></tr></thead><tbody>'+
-      sel.map(function(p){ return '<tr><td><b>'+esc(p.product_name_en||"")+'</b></td><td>'+esc(p.material||"")+'</td><td>'+esc(p.use_case_en||"")+'</td><td>'+esc(whyRecommendedEn(p))+'</td><td>'+esc(p.moq_note||p.moq||"")+'</td><td>'+esc(p.lead_time||"")+'</td></tr>'; }).join("")+
+    return '<div class="matrix-note"><b>Production note:</b> Current products can usually move faster to quotation or sampling based on confirmed specifications. Potential/custom products may require reference images, target size, finishing standard, quantity, packaging and sample development discussion before firm quotation.</div>'+ 
+      '<table><thead><tr>'+ 
+      '<th>Product</th><th>Status</th><th>Material</th><th>Use Case</th><th>Why Recommended</th><th>Unit</th><th>MOQ</th><th>Lead Time</th><th>Supply / Buyer Cooperation Note</th>'+ 
+      '</tr></thead><tbody>'+ 
+      sel.map(function(p){ return '<tr>'+ 
+        '<td><b>'+esc(p.product_name_en||"")+'</b><br><span style="color:#68746d">'+esc(p.product_id||"")+'</span></td>'+ 
+        '<td>'+statusBadge(p)+'</td>'+ 
+        '<td>'+esc(p.material||"")+'</td>'+ 
+        '<td>'+esc(p.use_case_en||"")+'</td>'+ 
+        '<td>'+esc(whyRecommendedEn(p))+'</td>'+ 
+        '<td>'+esc(unitText(p))+'</td>'+ 
+        '<td>'+esc(moqText(p))+'</td>'+ 
+        '<td>'+esc(leadTimeText(p))+'</td>'+ 
+        '<td>'+esc(productionNote(p))+'</td>'+ 
+      '</tr>'; }).join("")+ 
       '</tbody></table>';
   }
 
@@ -502,9 +550,71 @@
   }
 
   function matrixTsv(sel){
-    var header = ["Product","Material","Use Case","Why Recommended","Customization Options","MOQ","Lead Time","Product ID"].join("\t");
-    var rows = sel.map(function(p){ return [p.product_name_en,p.material,p.use_case_en,whyRecommendedEn(p),p.customization_options_en,p.moq_note||p.moq,p.lead_time,p.product_id].map(function(x){ return String(x||"").replace(/[\t\r\n]+/g," "); }).join("\t"); });
-    return [header].concat(rows).join("\n");
+    var header = ["Product","Status","Material","Use Case","Why Recommended","Unit","MOQ","Lead Time","Supply / Buyer Cooperation Note","Customization Options","Product ID"].join("	");
+    var rows = sel.map(function(p){ return [
+      p.product_name_en,
+      statusText(p),
+      p.material,
+      p.use_case_en,
+      whyRecommendedEn(p),
+      unitText(p),
+      moqText(p),
+      leadTimeText(p),
+      productionNote(p),
+      p.customization_options_en,
+      p.product_id
+    ].map(function(x){ return String(x||"").replace(/[	
+]+/g," "); }).join("	"); });
+    return [header].concat(rows).join("
+");
+  }
+
+  function specBox(label, value){
+    return '<div class="spec"><small>'+esc(label)+'</small><b>'+esc(value || "-")+'</b></div>';
+  }
+
+  function statusText(p){
+    var s = String(p.status || "").trim();
+    if(!s) return "To be confirmed";
+    if(s.toLowerCase() === "current") return "Current";
+    if(s.toLowerCase() === "potential") return "Potential";
+    return s;
+  }
+
+  function statusBadge(p){
+    var s = statusText(p);
+    var cls = s.toLowerCase() === "current" ? "status-current" : (s.toLowerCase() === "potential" ? "status-potential" : "");
+    return '<span class="status-badge '+cls+'">'+esc(s)+'</span>';
+  }
+
+  function unitText(p){
+    return p.unit || p.unit_note || "To be confirmed";
+  }
+
+  function moqText(p){
+    if(p.moq_note) return p.moq_note;
+    if(p.moq_min && p.moq_max) return p.moq_min + "–" + p.moq_max + " " + unitText(p);
+    if(p.moq_min) return "From " + p.moq_min + " " + unitText(p);
+    if(p.moq) return p.moq;
+    return "To be confirmed";
+  }
+
+  function leadTimeText(p){
+    if(p.lead_time) return p.lead_time;
+    if(p.lead_time_min_days && p.lead_time_max_days) return p.lead_time_min_days + "–" + p.lead_time_max_days + " days";
+    if(p.lead_time_min_days) return "From " + p.lead_time_min_days + " days";
+    return "To be confirmed";
+  }
+
+  function productionNote(p){
+    var status = statusText(p).toLowerCase();
+    if(status === "current"){
+      return "Available as a current PEFSO direction. Quotation can be prepared faster after confirming specification, quantity and packaging.";
+    }
+    if(status === "potential"){
+      return "Potential/custom direction. Requires reference sample, target specification, finishing standard and quantity before firm quotation.";
+    }
+    return "Production feasibility, quotation and sample timeline should be confirmed after reviewing buyer specification and target quantity.";
   }
 
   function contactBlock(){
@@ -515,6 +625,24 @@
       brand.website || "www.pefso.com",
       brand.address || "Kieu Ky - Gia Lam - Hanoi - Vietnam"
     ].filter(Boolean).map(esc).join(" · ");
+  }
+
+  function contactPanel(){
+    var name = brand.contact_name || "Thang MQ";
+    var email = brand.contact_email || "thangmq@pefso.com";
+    var phone = brand.phone || "+84 946 535858";
+    var website = brand.website || "www.pefso.com";
+    var address = brand.address || "Kieu Ky - Gia Lam - Hanoi - Vietnam";
+    var logo = brand.logo_url ? '<img class="proposal-logo" src="'+esc(brand.logo_url)+'">' : '<div style="font-size:28px;font-weight:900;color:var(--orange)">pefso</div>';
+    return '<div class="contact-panel">'+
+      '<div class="contact-card">'+logo+'<h3>Ready to develop the next sample?</h3><p>PEFSO can review your target product direction, material requirement, sample route, packaging expectation and production timeline.</p></div>'+
+      '<div class="contact-card"><h3>Contact</h3><div class="contact-list">'+
+        '<div class="contact-line"><b>Name</b><span>'+esc(name)+'</span></div>'+
+        '<div class="contact-line"><b>Email</b><span>'+esc(email)+'</span></div>'+
+        '<div class="contact-line"><b>Phone</b><span>'+esc(phone)+'</span></div>'+
+        '<div class="contact-line"><b>Website</b><span>'+esc(website)+'</span></div>'+
+        '<div class="contact-line"><b>Address</b><span>'+esc(address)+'</span></div>'+
+      '</div></div></div>';
   }
 
   function saveTracking(buyer, sel){
