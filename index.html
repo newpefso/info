@@ -94,10 +94,23 @@
     th{background:#153d35;color:#fff;text-align:left;padding:9px;border:1px solid #153d35}
     td{padding:8px;border:1px solid #eadcc8;vertical-align:top;line-height:1.35}
     tr:nth-child(even) td{background:#fffaf3}
+    .note-upload-box{border:1px dashed #e6c39a;background:#fffaf3;border-radius:18px;padding:12px;margin-top:6px}
+    .note-upload-help{font-size:12px;color:var(--muted);line-height:1.45;margin:6px 0 0}
+    .note-preview-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+    .note-preview{border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden;position:relative}
+    .note-preview img{width:100%;height:86px;object-fit:cover;display:block;background:#f4eadc}
+    .note-preview div{font-size:10px;line-height:1.25;padding:6px;color:#405149}
+    .note-preview .size{color:#8b4206;font-weight:800}
+    .field-tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .tiny-btn{border:1px solid var(--line);background:#fff7ed;color:#8b4206;border-radius:999px;padding:6px 9px;font-size:11px;font-weight:850;cursor:pointer}
+    .note-status-ok{color:#145437;background:#effaf3;border:1px solid #bfe4cc;border-radius:14px;padding:9px 10px;margin-top:10px}
+    .note-status-warn{color:#8b4206;background:#fff7ed;border:1px solid #ffd2a1;border-radius:14px;padding:9px 10px;margin-top:10px}
+    .note-card .thumb-row{display:flex;gap:4px;margin-top:7px;flex-wrap:wrap}
+    .note-card .mini-thumb{width:38px;height:38px;border-radius:9px;background:#f4eadc;object-fit:cover;border:1px solid var(--line)}
     .notes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
     .note-card{border:1px solid var(--line);background:#fff;border-radius:18px;padding:10px}.note-card h3{font-size:14px;margin:0 0 4px}.note-card p{font-size:12px}
     .hidden-frame{display:none}
-    @media(max-width:900px){.grid{grid-template-columns:1fr}.product-grid{grid-template-columns:1fr}.cover-options{grid-template-columns:1fr 1fr}.cover,.two-col{grid-template-columns:1fr}.proposal-products{grid-template-columns:1fr}.slide{min-height:auto;padding:34px 22px}.cover h1{font-size:32px}.notes-grid{grid-template-columns:1fr}}
+    @media(max-width:900px){.grid{grid-template-columns:1fr}.product-grid{grid-template-columns:1fr}.cover-options{grid-template-columns:1fr 1fr}.note-preview-grid{grid-template-columns:repeat(3,1fr)}.cover,.two-col{grid-template-columns:1fr}.proposal-products{grid-template-columns:1fr}.slide{min-height:auto;padding:34px 22px}.cover h1{font-size:32px}.notes-grid{grid-template-columns:1fr}}
     @media print{
       body{background:#fff}.head,.tabs,.card,.preview-toolbar,.bottom-nav{display:none!important}.app{padding:0;max-width:none}.preview-wrap{border:0;box-shadow:none;margin:0}.slide{border-bottom:0;min-height:100vh}.proposal{display:block}
     }
@@ -179,7 +192,18 @@
       </div>
       <div class="row2"><div><label>Địa điểm nếu có</label><input id="noteLocation"></div><div><label>Người liên hệ nếu có</label><input id="notePerson"></div></div>
       <label>Ghi chú</label><textarea id="noteText"></textarea>
-      <label>Ảnh nếu có</label><input id="noteImage" type="file" accept="image/*">
+      <label>Ảnh nếu có</label>
+      <div class="note-upload-box">
+        <input id="noteImage" type="file" accept="image/*" multiple>
+        <div class="note-upload-help">Có thể chọn nhiều ảnh. App sẽ nén từng ảnh xuống dưới 1MB và đặt tên theo: ngày - loại ghi nhận - tên/mối/vấn đề - số thứ tự.</div>
+        <div class="note-preview-grid" id="notePreviewGrid"></div>
+      </div>
+      <div class="field-tools">
+        <button class="tiny-btn" type="button" data-note-template="supplier">Mẫu ghi xưởng</button>
+        <button class="tiny-btn" type="button" data-note-template="buyer">Mẫu ghi khách</button>
+        <button class="tiny-btn" type="button" data-note-template="issue">Mẫu ghi vấn đề</button>
+        <button class="tiny-btn" type="button" id="clearNoteFilesBtn">Xóa ảnh đã chọn</button>
+      </div>
       <div class="actions"><button class="btn orange" id="saveNoteBtn">Lưu ghi nhận</button></div>
       <div class="status" id="noteStatus"></div>
     </div>
@@ -224,6 +248,7 @@
   var latestProposalHtml = "";
   var latestMatrixTsv = "";
   var recentNotes = [];
+  var noteFiles = [];
   var selectedCoverUrl = "";
   var currentMode = "product_spotlight";
 
@@ -286,6 +311,11 @@
     $("productSearch").addEventListener("input", renderSuggestedProducts);
     $("allProductSearch").addEventListener("input", renderAllProducts);
     $("saveNoteBtn").addEventListener("click", saveFieldNote);
+    $("noteImage").addEventListener("change", handleNoteFiles);
+    $("clearNoteFilesBtn").addEventListener("click", function(){ noteFiles = []; $("noteImage").value = ""; renderNotePreviews(); });
+    document.querySelectorAll("[data-note-template]").forEach(function(btn){
+      btn.addEventListener("click", function(){ applyNoteTemplate(btn.getAttribute("data-note-template")); });
+    });
   }
 
   function switchTab(id){
@@ -617,28 +647,207 @@
     alert("Đã gửi dữ liệu vào tracker. Kiểm tra Google Sheet sau vài giây.");
   }
 
-  function saveFieldNote(){
-    var file = $("noteImage").files && $("noteImage").files[0];
-    var done = function(dataUrl){
+  function slugify(str){
+    var s = norm(str || "note").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    return s || "note";
+  }
+
+  function pad2(n){ return String(n).padStart(2, "0"); }
+
+  function nowStamp(){
+    var d = new Date();
+    return d.getFullYear() + pad2(d.getMonth()+1) + pad2(d.getDate()) + "-" + pad2(d.getHours()) + pad2(d.getMinutes());
+  }
+
+  function noteBaseName(){
+    var type = $("noteType").value || "note";
+    var name = $("noteName").value.trim() || $("noteText").value.trim().slice(0,45) || "field-note";
+    return "PEFSO-" + nowStamp() + "-" + slugify(type) + "-" + slugify(name);
+  }
+
+  function handleNoteFiles(e){
+    noteFiles = Array.prototype.slice.call(e.target.files || []);
+    renderNotePreviews();
+  }
+
+  function renderNotePreviews(){
+    var grid = $("notePreviewGrid");
+    if(!grid) return;
+    if(!noteFiles.length){
+      grid.innerHTML = "";
+      $("noteStatus").textContent = "";
+      return;
+    }
+    grid.innerHTML = noteFiles.map(function(file, idx){
+      var url = URL.createObjectURL(file);
+      return '<div class="note-preview">'+
+        '<img src="'+url+'" alt="">'+
+        '<div><b>Ảnh '+(idx+1)+'</b><br>'+esc(file.name || "")+'<br><span class="size">'+formatBytes(file.size)+'</span></div>'+
+      '</div>';
+    }).join("");
+    $("noteStatus").className = "status note-status-warn";
+    $("noteStatus").textContent = "Đã chọn " + noteFiles.length + " ảnh. Ảnh sẽ được nén dưới 1MB trước khi lưu.";
+  }
+
+  function formatBytes(bytes){
+    if(!bytes && bytes !== 0) return "";
+    if(bytes < 1024) return bytes + " B";
+    if(bytes < 1024*1024) return Math.round(bytes/1024) + " KB";
+    return (bytes/1024/1024).toFixed(1) + " MB";
+  }
+
+  function applyNoteTemplate(type){
+    $("noteType").value = type;
+    if(type === "supplier"){
+      if(!$("noteText").value.trim()) $("noteText").value = "Tên xưởng/cơ sở: \nSản phẩm liên quan: \nNăng lực/điểm mạnh: \nRủi ro cần kiểm tra: \nViệc cần hỏi tiếp: ";
+    } else if(type === "buyer"){
+      if(!$("noteText").value.trim()) $("noteText").value = "Khách/công ty: \nSản phẩm quan tâm: \nThị trường: \nSố lượng/target nếu có: \nViệc cần follow-up: ";
+    } else if(type === "issue"){
+      if(!$("noteText").value.trim()) $("noteText").value = "Vấn đề: \nLiên quan tới sản phẩm/xưởng/khách: \nẢnh bằng chứng: \nMức độ ảnh hưởng: \nViệc cần xử lý: ";
+    }
+  }
+
+  function compressImageUnder1MB(file, index){
+    return new Promise(function(resolve, reject){
+      var reader = new FileReader();
+      reader.onerror = reject;
+      reader.onload = function(ev){
+        var img = new Image();
+        img.onerror = reject;
+        img.onload = function(){
+          var maxSide = 1800;
+          var quality = 0.82;
+          var dataUrl = "";
+          for(var attempt=0; attempt<10; attempt++){
+            var w = img.width, h = img.height;
+            var scale = Math.min(1, maxSide / Math.max(w, h));
+            w = Math.round(w * scale);
+            h = Math.round(h * scale);
+            var c = document.createElement("canvas");
+            c.width = w;
+            c.height = h;
+            var ctx = c.getContext("2d");
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0,0,w,h);
+            ctx.drawImage(img,0,0,w,h);
+            dataUrl = c.toDataURL("image/jpeg", quality);
+            var approxBytes = Math.ceil((dataUrl.length - "data:image/jpeg;base64,".length) * 3 / 4);
+            if(approxBytes <= 950 * 1024 || maxSide <= 900){
+              resolve({
+                dataUrl: dataUrl,
+                bytes: approxBytes,
+                suggestedName: noteBaseName() + "-" + pad2(index + 1) + ".jpg"
+              });
+              return;
+            }
+            quality = Math.max(0.58, quality - 0.06);
+            maxSide = Math.round(maxSide * 0.86);
+          }
+          resolve({
+            dataUrl: dataUrl,
+            bytes: Math.ceil((dataUrl.length - "data:image/jpeg;base64,".length) * 3 / 4),
+            suggestedName: noteBaseName() + "-" + pad2(index + 1) + ".jpg"
+          });
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function saveFieldNote(){
+    var rawName = $("noteName").value.trim();
+    var rawText = $("noteText").value.trim();
+    if(!rawName && !rawText && !noteFiles.length){
+      $("noteStatus").className = "status note-status-warn";
+      $("noteStatus").textContent = "Chưa có nội dung để lưu. Hãy nhập tên/mối/vấn đề, ghi chú hoặc chọn ảnh.";
+      return;
+    }
+
+    var base = noteBaseName();
+    var compressed = [];
+    $("noteStatus").className = "status note-status-warn";
+    $("noteStatus").textContent = noteFiles.length ? ("Đang nén " + noteFiles.length + " ảnh dưới 1MB...") : "Đang lưu ghi nhận...";
+
+    try{
+      for(var i=0; i<noteFiles.length; i++){
+        compressed.push(await compressImageUnder1MB(noteFiles[i], i));
+      }
+    }catch(err){
+      $("noteStatus").className = "status note-status-warn";
+      $("noteStatus").textContent = "Lỗi nén ảnh. Hãy thử lại với ảnh khác.";
+      return;
+    }
+
+    var imageNames = compressed.map(function(x){ return x.suggestedName; });
+    var imageSizes = compressed.map(function(x){ return formatBytes(x.bytes); });
+    var previewThumbs = compressed.slice(0,4).map(function(x){ return x.dataUrl; });
+
+    if(compressed.length){
+      compressed.forEach(function(img, idx){
+        var note = {
+          note_id: base + "-" + pad2(idx + 1),
+          image_filename: img.suggestedName,
+          created_at: new Date().toISOString(),
+          note_type: $("noteType").value,
+          name: rawName,
+          location: $("noteLocation").value.trim(),
+          person: $("notePerson").value.trim(),
+          raw_note: rawText + "\\n\\nImage file: " + img.suggestedName,
+          image: img.dataUrl,
+          tags: [slugify($("noteType").value), slugify(rawName)].filter(Boolean).join(", "),
+          status:"raw"
+        };
+        post("saveFieldNote", {note:note});
+      });
+    } else {
       var note = {
-        note_id: uid("note"), created_at: new Date().toISOString(),
-        note_type: $("noteType").value, name: $("noteName").value.trim(), location: $("noteLocation").value.trim(),
-        person: $("notePerson").value.trim(), raw_note: $("noteText").value.trim(), image: dataUrl || "",
+        note_id: base,
+        image_filename: "",
+        created_at: new Date().toISOString(),
+        note_type: $("noteType").value,
+        name: rawName,
+        location: $("noteLocation").value.trim(),
+        person: $("notePerson").value.trim(),
+        raw_note: rawText,
+        image: "",
+        tags: [slugify($("noteType").value), slugify(rawName)].filter(Boolean).join(", "),
         status:"raw"
       };
-      recentNotes.unshift(note);
-      renderRecentNotes();
       post("saveFieldNote", {note:note});
-      $("noteStatus").textContent = "Đã lưu ghi nhận.";
-      ["noteName","noteLocation","notePerson","noteText"].forEach(function(id){ $(id).value=""; });
-      $("noteImage").value = "";
-    };
-    if(file) compressImage(file, done); else done("");
+    }
+
+    recentNotes.unshift({
+      note_id: base,
+      created_at: new Date().toISOString(),
+      note_type: $("noteType").value,
+      name: rawName || base,
+      location: $("noteLocation").value.trim(),
+      person: $("notePerson").value.trim(),
+      raw_note: rawText,
+      image_names: imageNames,
+      image_sizes: imageSizes,
+      thumbs: previewThumbs,
+      status:"raw"
+    });
+    renderRecentNotes();
+
+    $("noteStatus").className = "status note-status-ok";
+    $("noteStatus").textContent = compressed.length
+      ? "Đã gửi " + compressed.length + " ảnh về Drive. Tên file: " + imageNames.join(", ")
+      : "Đã lưu ghi nhận.";
+
+    ["noteName","noteLocation","notePerson","noteText"].forEach(function(id){ $(id).value=""; });
+    noteFiles = [];
+    $("noteImage").value = "";
+    renderNotePreviews();
   }
 
   function renderRecentNotes(){
     $("recentNotes").innerHTML = recentNotes.slice(0,12).map(function(n){
-      return '<div class="note-card"><h3>'+esc(n.name||n.note_type)+'</h3><p>'+esc(n.raw_note||"")+'</p><p>'+esc(n.location||"")+'</p></div>';
+      var thumbs = (n.thumbs || []).map(function(src){ return '<img class="mini-thumb" src="'+src+'" alt="">'; }).join("");
+      var names = (n.image_names || []).length ? '<p style="margin-top:6px;color:#8b4206"><b>Ảnh:</b> '+esc((n.image_names || []).join(", "))+'</p>' : "";
+      return '<div class="note-card"><h3>'+esc(n.name||n.note_type)+'</h3><p>'+esc(n.raw_note||"")+'</p><p>'+esc(n.location||"")+'</p>'+names+'<div class="thumb-row">'+thumbs+'</div></div>';
     }).join("");
   }
 
