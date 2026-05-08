@@ -3,414 +3,574 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PEFSO Ghi Nhận</title>
+  <title>PEFSO Sales Kit Builder</title>
   <style>
     :root{
-      --bg:#fbf5ec;--card:#fff;--ink:#153d35;--muted:#6d756e;--line:#eadcc8;
-      --soft:#fff1df;--orange:#ed7a1a;--green:#153d35;--blue:#245b8f;--red:#b42318;
-      --shadow:0 16px 42px rgba(58,39,16,.08);--r:24px
+      --bg:#fbf5ec;--card:#fffaf3;--paper:#fff;--ink:#133d35;--muted:#68746d;--line:#eadcc8;
+      --orange:#ed7a1a;--orange2:#ffefe0;--green:#133d35;--blue:#245b8f;--red:#b42318;
+      --shadow:0 18px 46px rgba(57,39,16,.10);--r:24px
     }
     *{box-sizing:border-box}
     body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
-    button,input,textarea{font:inherit}button{cursor:pointer}
-    header{position:sticky;top:0;z-index:20;background:rgba(251,245,236,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
-    .head{max-width:860px;margin:auto;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .brand{display:flex;align-items:center;gap:10px;min-width:0}.logo{width:42px;height:42px;border-radius:15px;background:var(--orange);color:#fff;font-size:25px;font-weight:900;display:flex;align-items:center;justify-content:center}
-    h1{font-size:19px;margin:0}.sub{font-size:12px;color:var(--muted);margin-top:3px}
-    .app{max-width:860px;margin:auto;padding:14px 14px 88px}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:15px;margin-top:14px}
-    .card h2{font-size:18px;margin:0 0 6px}.card p{font-size:13px;color:var(--muted);line-height:1.4;margin:0}
+    button,input,textarea,select{font:inherit}
+    button{cursor:pointer}
+    header{position:sticky;top:0;z-index:40;background:rgba(251,245,236,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+    .head{max-width:1180px;margin:auto;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .brand{display:flex;gap:10px;align-items:center;min-width:0}
+    .brand-logo{height:42px;min-width:42px;border-radius:15px;background:var(--orange);color:#fff;display:flex;align-items:center;justify-content:center;font-size:25px;font-weight:900;overflow:hidden;padding:0 10px}
+    .brand-logo img{height:100%;max-width:120px;object-fit:contain}
+    h1{font-size:19px;margin:0;letter-spacing:-.02em}.sub{font-size:12px;color:var(--muted);margin-top:3px}
+    .app{max-width:1180px;margin:auto;padding:14px 16px 90px}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .tab-btn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 12px;font-weight:850;color:var(--ink)}
+    .tab-btn.active{background:var(--green);border-color:var(--green);color:#fff}
+    .tab{display:none}.tab.active{display:block}
+    .grid{display:grid;grid-template-columns:390px 1fr;gap:14px;align-items:start}
+    .card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:15px;margin-top:14px}
+    .card h2{font-size:18px;margin:0 0 6px}.card h3{font-size:15px;margin:0 0 6px}.card p{font-size:13px;color:var(--muted);line-height:1.45;margin:0}
     .btn{border:0;border-radius:16px;padding:12px 14px;font-weight:850;background:var(--green);color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:8px}
     .btn.orange{background:var(--orange)}.btn.light{background:#fff;color:var(--ink);border:1px solid var(--line)}.btn.blue{background:var(--blue)}.btn.red{background:#fff;color:var(--red);border:1px solid #efc2ba}.btn.full{width:100%}
-    .btn:active,.tile:active{transform:translateY(1px)}
-    .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.tile{min-height:110px;border-radius:24px;border:1px solid #f2c894;background:var(--soft);color:#814407;font-size:17px;font-weight:900;padding:14px;text-align:center}
-    .tile.primary{background:var(--orange);color:#fff}.tile.dark{background:var(--green);border-color:var(--green);color:#fff}.tile small{display:block;font-size:12px;margin-top:6px;font-weight:700;opacity:.84}
-    .form{display:none}.form.show{display:block}.mode{display:inline-flex;background:#fff7ed;border:1px solid #ffd2a1;color:#8b4206;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:850;margin-bottom:10px}
-    .photo{display:none;height:240px;border:2px dashed #efbd7e;background:#fff7eb;border-radius:24px;align-items:center;justify-content:center;text-align:center;color:#9d560f;font-weight:900;overflow:hidden;margin-bottom:10px}
-    .photo.show{display:flex}.photo img{width:100%;height:100%;object-fit:cover}.hidden{display:none!important}
-    textarea,input{width:100%;border:1px solid var(--line);border-radius:18px;background:#fff;color:var(--ink);padding:14px 13px;outline:none}
-    textarea{min-height:112px;resize:vertical;line-height:1.48;font-size:16px}input{font-size:15px}
-    textarea:focus,input:focus{border-color:#f2a25c;box-shadow:0 0 0 4px rgba(237,122,26,.12)}
-    .link-row{display:none;grid-template-columns:1fr;gap:10px;margin-top:10px}.link-row.show{display:grid}
     .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-    .result{display:none;margin-top:12px;border-radius:22px;border:1px solid #bfe4cc;background:#effaf3;color:#145437;padding:13px;font-size:13px;line-height:1.45}.result.show{display:block}
-    .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.chip{display:inline-flex;border:1px solid var(--line);background:#fff8ef;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:800;color:#704211}.chip.red{background:#fff3f0;color:#9c2c1f;border-color:#f3c2ba}.chip.blue{background:#eef6ff;color:#244f78;border-color:#c7def5}
-    .reward{display:grid;gap:10px;margin-top:10px}.reward-box{background:#fff;border:1px solid #cfe6d8;border-radius:18px;padding:12px}.reward-box b{display:block;margin-bottom:6px}.reward-box ol{margin:0;padding-left:18px}.reward-box li{margin:5px 0}.reply{white-space:pre-wrap;background:#f7fbff;border:1px solid #c7def5;border-radius:16px;padding:10px;color:#244f78}
-    .search{margin-top:12px}.records{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
-    .record{border:1px solid var(--line);border-radius:20px;background:#fff;padding:10px;display:grid;grid-template-columns:76px 1fr;gap:10px;cursor:pointer}
-    .thumb{width:76px;height:76px;border-radius:17px;background:#f4eadc;display:flex;align-items:center;justify-content:center;color:#b09976;font-weight:900;overflow:hidden}.thumb img{width:100%;height:100%;object-fit:cover}
-    .record h3{font-size:14px;line-height:1.25;margin:0}.meta{font-size:11px;color:var(--muted);margin-top:5px}.note{font-size:12px;color:#44524b;line-height:1.33;margin-top:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-    .output{background:var(--green);color:#fff;border-radius:24px;padding:15px;margin-top:14px}.output h2{font-size:18px;margin:0 0 4px}.output p{color:#dbe9e4}.output-box{white-space:pre-wrap;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:18px;padding:12px;margin-top:10px;max-height:260px;overflow:auto;font-size:13px;line-height:1.45}
-    .config{display:none}.config.show{display:block}.status-line{font-size:12px;color:var(--muted);margin-top:8px}
-    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.stats div{border:1px solid var(--line);background:#fff;border-radius:18px;padding:12px}.stats b{font-size:22px;display:block}.stats span{font-size:12px;color:var(--muted)}
-    .empty{text-align:center;border:1px dashed var(--line);background:#fff;border-radius:20px;color:var(--muted);padding:24px;margin-top:12px}
-    .admin-only{display:none}.admin .admin-only{display:block}.admin .admin-inline{display:inline-flex}
-    .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.36);z-index:70;padding:14px;align-items:center;justify-content:center}.modal.show{display:flex}
-    .modal-card{background:#fff;border:1px solid var(--line);border-radius:26px;max-width:760px;width:100%;max-height:92vh;overflow:auto;box-shadow:0 24px 70px rgba(0,0,0,.18)}
-    .modal-head{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);padding:14px;display:flex;justify-content:space-between;gap:10px;z-index:2}.modal-body{padding:14px}
-    .edit-photo{height:220px;border:2px dashed #efbd7e;background:#fff7eb;border-radius:22px;display:flex;align-items:center;justify-content:center;overflow:hidden;color:#9d560f;font-weight:900;text-align:center;margin-bottom:10px}.edit-photo img{width:100%;height:100%;object-fit:cover}
-    .bottom{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(255,250,243,.96);backdrop-filter:blur(12px);border-top:1px solid var(--line);z-index:50;padding:8px 10px env(safe-area-inset-bottom)}.bottom button{flex:1;border:0;background:transparent;border-radius:14px;padding:10px 4px;font-weight:900;color:var(--muted)}.bottom button.active{background:var(--soft);color:var(--orange)}
-    @media(max-width:780px){.app{padding:12px 12px 88px}.head .admin-only{display:none!important}.tiles{grid-template-columns:1fr}.tile{min-height:88px}.records{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.tab{display:none}.tab.active{display:block}.bottom{display:flex}.modal{padding:8px}.edit-photo{height:180px}}
+    label{display:block;font-size:12px;color:var(--muted);font-weight:800;margin:10px 0 5px}
+    input,textarea,select{width:100%;border:1px solid var(--line);border-radius:15px;background:#fff;color:var(--ink);padding:12px;outline:none}
+    textarea{min-height:110px;resize:vertical;line-height:1.45}
+    input:focus,textarea:focus,select:focus{border-color:#f2a25c;box-shadow:0 0 0 4px rgba(237,122,26,.12)}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .mode-grid{display:grid;grid-template-columns:1fr;gap:8px;margin-top:8px}
+    .mode{border:1px solid var(--line);background:#fff8ef;border-radius:16px;padding:10px;cursor:pointer}
+    .mode.active{border-color:var(--orange);background:var(--orange2);box-shadow:0 0 0 3px rgba(237,122,26,.12)}
+    .mode b{display:block;font-size:13px}.mode span{font-size:12px;color:var(--muted)}
+    .product-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
+    .product{border:1px solid var(--line);border-radius:20px;background:#fff;padding:10px;display:grid;grid-template-columns:96px 1fr;gap:10px;position:relative}
+    .product input[type=checkbox]{position:absolute;top:9px;right:9px;width:22px;height:22px}
+    .pimg{width:96px;height:96px;background:#f4eadc;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#9e815a;font-weight:900;overflow:hidden;text-align:center}
+    .pimg img{width:100%;height:100%;object-fit:cover}
+    .product h3{font-size:14px;line-height:1.22;margin:0 28px 4px 0}
+    .meta{font-size:11px;color:var(--muted);line-height:1.35}.reason{font-size:12px;line-height:1.35;margin-top:6px;color:#405149}
+    .pill{display:inline-flex;border-radius:999px;background:#fff7ed;border:1px solid #ffd2a1;color:#8b4206;padding:4px 7px;font-size:11px;font-weight:850;margin:4px 4px 0 0}
+    .status{font-size:13px;color:var(--muted);margin-top:8px}
+    .preview-wrap{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);margin-top:14px}
+    .preview-toolbar{padding:12px;border-bottom:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap;background:#fffaf3}
+    .proposal{background:#fff;color:#183d35}
+    .slide{min-height:620px;padding:54px 58px;border-bottom:1px solid #eadcc8;page-break-after:always;position:relative}
+    .slide:last-child{border-bottom:0}
+    .slide::before{content:"";position:absolute;top:0;left:0;right:0;height:12px;background:var(--orange)}
+    .proposal-logo{height:44px;max-width:160px;object-fit:contain}
+    .cover{display:grid;grid-template-columns:1.15fr .85fr;gap:36px;align-items:center}
+    .cover h1{font-size:44px;line-height:1.05;color:var(--green);margin:28px 0 12px}
+    .cover .orange-bar{width:120px;height:10px;background:var(--orange);border-radius:999px;margin:20px 0}
+    .cover-art{height:420px;border-radius:32px;background:#fff0df;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid #f0cfac}
+    .cover-art img{width:100%;height:100%;object-fit:cover}
+    .section-title{font-size:30px;margin:0 0 20px;color:var(--green)}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+    .box{border:1px solid #eadcc8;background:#fffaf3;border-radius:24px;padding:18px}
+    .box h3{font-size:18px;color:var(--green);margin:0 0 8px}
+    .box p,.box li{font-size:14px;line-height:1.55;color:#405149}
+    .proposal-products{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .proposal-product{border:1px solid #eadcc8;border-radius:22px;padding:12px;background:#fffaf3}
+    .proposal-product .pimg{width:100%;height:160px;margin-bottom:10px}
+    .proposal-product h3{font-size:16px;margin:0 0 6px;color:var(--green)}
+    table{width:100%;border-collapse:collapse;font-size:12px}
+    th{background:#153d35;color:#fff;text-align:left;padding:9px;border:1px solid #153d35}
+    td{padding:8px;border:1px solid #eadcc8;vertical-align:top;line-height:1.35}
+    tr:nth-child(even) td{background:#fffaf3}
+    .notes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .note-card{border:1px solid var(--line);background:#fff;border-radius:18px;padding:10px}.note-card h3{font-size:14px;margin:0 0 4px}.note-card p{font-size:12px}
+    .hidden-frame{display:none}
+    @media(max-width:900px){.grid{grid-template-columns:1fr}.product-grid{grid-template-columns:1fr}.cover,.two-col{grid-template-columns:1fr}.proposal-products{grid-template-columns:1fr}.slide{min-height:auto;padding:34px 22px}.cover h1{font-size:32px}.notes-grid{grid-template-columns:1fr}}
+    @media print{
+      body{background:#fff}.head,.tabs,.card,.preview-toolbar,.bottom-nav{display:none!important}.app{padding:0;max-width:none}.preview-wrap{border:0;box-shadow:none;margin:0}.slide{border-bottom:0;min-height:100vh}.proposal{display:block}
+    }
   </style>
 </head>
 <body>
 <header>
   <div class="head">
-    <div class="brand"><div class="logo">p</div><div><h1>PEFSO Ghi Nhận</h1><div class="sub">Ảnh · Ghi chú · Link</div></div></div>
-    <button class="btn light admin-only" id="exportBtn">Xuất dữ liệu</button>
+    <div class="brand">
+      <div class="brand-logo" id="brandLogo">pefso</div>
+      <div><h1>PEFSO Sales Kit Builder</h1><div class="sub">Tạo proposal + matrix theo khách</div></div>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="builderTab">Tạo Sales Kit</button>
+      <button class="tab-btn" data-tab="productsTab">Sản phẩm</button>
+      <button class="tab-btn" data-tab="notesTab">Ghi nhận thị trường</button>
+      <button class="tab-btn" data-tab="adminTab">Cấu hình</button>
+    </div>
   </div>
 </header>
 
-<main class="app" id="appRoot">
-  <section id="captureTab" class="tab active">
-    <div class="card">
-      <div class="tiles">
-        <button class="tile primary" data-mode="photo" type="button">Ảnh<small>mẫu / xưởng / ảnh chụp màn hình</small></button>
-        <button class="tile dark" data-mode="note" type="button">Ghi nhanh<small>gõ hoặc đọc bằng bàn phím giọng nói</small></button>
-        <button class="tile" data-mode="link" type="button">Dán link<small>website / catalogue / link khách gửi</small></button>
+<main class="app">
+  <section class="tab active" id="builderTab">
+    <div class="grid">
+      <div>
+        <div class="card">
+          <h2>1. Thông tin khách</h2>
+          <p>Nhập đủ để app lưu vào tracker và tạo tài liệu đúng ngữ cảnh.</p>
+          <label>Công ty / khách hàng</label><input id="buyerCompany" placeholder="Ví dụ: ABC Trading">
+          <div class="row2">
+            <div><label>Người liên hệ</label><input id="contactName" placeholder="Tên nếu có"></div>
+            <div><label>Email</label><input id="buyerEmail" placeholder="buyer@example.com"></div>
+          </div>
+          <div class="row2">
+            <div><label>Quốc gia / thị trường</label><input id="country" placeholder="France, US, Japan..."></div>
+            <div><label>Số sản phẩm</label><select id="productCount"><option>6</option><option selected>8</option><option>10</option><option>12</option></select></div>
+          </div>
+          <label>Khách hỏi gì?</label>
+          <textarea id="buyerBrief" placeholder="Paste email, Zalo, WhatsApp hoặc ghi chú ngắn về nhu cầu khách..."></textarea>
+        </div>
+
+        <div class="card">
+          <h2>2. Kiểu đề xuất</h2>
+          <p>Chọn theo cách nên trình bày proposal, không phải chỉ theo quốc gia.</p>
+          <div class="mode-grid" id="modeGrid"></div>
+          <div class="actions"><button class="btn orange full" id="suggestBtn">Gợi ý sản phẩm</button></div>
+          <div class="status" id="suggestStatus">Đang chờ dữ liệu sản phẩm...</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <h2>3. Chọn sản phẩm</h2>
+          <p>Tích/bỏ tích, tìm thêm sản phẩm nếu muốn. Sản phẩm cần có ảnh trong Product Master để proposal đẹp.</p>
+          <input id="productSearch" placeholder="Tìm sản phẩm để thêm...">
+          <div class="product-grid" id="productGrid"></div>
+          <div class="actions">
+            <button class="btn orange" id="buildBtn">Tạo Proposal + Matrix</button>
+            <button class="btn light" id="clearSelectionBtn">Bỏ chọn tất cả</button>
+          </div>
+        </div>
       </div>
     </div>
-
-    <div class="card form" id="captureForm">
-      <div class="mode" id="modeLabel">Ghi nhận mới</div>
-      <label class="photo" id="photoBox" for="photoInput"><span id="photoText">Thêm ảnh</span><img id="photoPreview" class="hidden" alt="preview"></label>
-      <input class="hidden" id="photoInput" type="file" accept="image/*">
-      <textarea id="rawText" placeholder="Nhập ghi chú nhanh tại đây"></textarea>
-      <div class="link-row" id="linkRow"><input id="linkUrl" placeholder="Dán link"><input id="linkTitle" placeholder="Tên link nếu cần"></div>
-      <div class="actions"><button class="btn orange" id="saveBtn" type="button">Lưu</button><button class="btn blue" id="urgentBtn" type="button">Lưu gấp</button><button class="btn light" id="clearBtn" type="button">Xóa form</button></div>
-      <div class="result" id="resultBox"></div>
-    </div>
-
-    <div class="card">
-      <h2>Ghi nhận gần đây</h2><p>Các tín hiệu mới nhất.</p>
-      <input class="search" id="searchInput" placeholder="Tìm: mây, basket, Thái Bình, khách, lỗi...">
-      <div id="recordList" class="records"></div><div id="emptyBox" class="empty hidden">Không có ghi nhận phù hợp.</div>
-    </div>
+    <div id="previewArea"></div>
   </section>
 
-  <section id="outputTab" class="tab active">
-    <div class="output">
-      <h2>Kết quả nhanh</h2><p>Tóm tắt từ ghi nhận mới nhất.</p>
-      <div class="actions">
-        <button class="btn orange" id="copyLatestBtn" type="button">Copy tóm tắt</button>
-        <button class="btn light" id="copyReplyBtn" type="button">Copy tin nhắn</button>
-        <button class="btn light admin-only" id="copyTsvBtn" type="button">Copy bảng TSV</button>
+  <section class="tab" id="productsTab">
+    <div class="card"><h2>Kho sản phẩm</h2><p>Dữ liệu lấy từ sheet PRODUCT_MASTER.</p><input id="allProductSearch" placeholder="Tìm theo tên, nhóm, material, mode..."><div class="product-grid" id="allProductGrid"></div></div>
+  </section>
+
+  <section class="tab" id="notesTab">
+    <div class="card">
+      <h2>Ghi nhận thị trường</h2>
+      <p>Phụ trợ: lưu cơ sở, người, mối, vấn đề, ý tưởng, ảnh. Dữ liệu sẽ xử lý phía sau.</p>
+      <div class="row2">
+        <div><label>Loại ghi nhận</label><select id="noteType"><option>supplier</option><option>buyer</option><option>product</option><option>issue</option><option>idea</option></select></div>
+        <div><label>Tên cơ sở / người / mối / vấn đề</label><input id="noteName"></div>
       </div>
-      <div class="output-box" id="outputBox">Chưa có ghi nhận mới.</div>
+      <div class="row2"><div><label>Địa điểm nếu có</label><input id="noteLocation"></div><div><label>Người liên hệ nếu có</label><input id="notePerson"></div></div>
+      <label>Ghi chú</label><textarea id="noteText"></textarea>
+      <label>Ảnh nếu có</label><input id="noteImage" type="file" accept="image/*">
+      <div class="actions"><button class="btn orange" id="saveNoteBtn">Lưu ghi nhận</button></div>
+      <div class="status" id="noteStatus"></div>
     </div>
+    <div class="card"><h2>Ghi nhận gần đây</h2><div class="notes-grid" id="recentNotes"></div></div>
+  </section>
 
-    <div class="card admin-only"><h2>Tổng quan</h2><div class="stats"><div><b id="totalCount">0</b><span>tổng</span></div><div><b id="urgentCount">0</b><span>gấp</span></div><div><b id="productCount">0</b><span>sản phẩm</span></div><div><b id="supplierCount">0</b><span>xưởng/nguồn</span></div></div></div>
-
-    <div class="card admin-only">
-      <h2>Kết nối hệ thống</h2>
-      <p>Chỉ cấu hình một lần trước khi gửi link cho người dùng.</p>
-      <div class="actions"><button class="btn light" id="toggleConfigBtn" type="button">Cấu hình</button><button class="btn light" id="testSendBtn" type="button">Gửi dòng test</button></div>
-      <div class="config" id="configBox">
-        <input id="endpointInput" placeholder="URL Web App của Apps Script">
-        <input id="tokenInput" placeholder="APP_TOKEN nếu có">
-        <div class="actions"><button class="btn" id="saveEndpointBtn" type="button">Lưu cấu hình</button><button class="btn red" id="clearEndpointBtn" type="button">Xóa cấu hình</button></div>
+  <section class="tab" id="adminTab">
+    <div class="card">
+      <h2>Cấu hình</h2>
+      <p>Dán Web App URL từ Apps Script. Khi đưa lên GitHub có thể hardcode ở đầu file index.html.</p>
+      <label>Apps Script Web App URL</label><input id="endpointInput" placeholder="https://script.google.com/macros/s/.../exec">
+      <label>APP_TOKEN nếu có</label><input id="tokenInput">
+      <div class="actions">
+        <button class="btn" id="saveConfigBtn">Lưu cấu hình</button>
+        <button class="btn light" id="reloadDataBtn">Tải lại dữ liệu</button>
+        <button class="btn light" id="testBackendBtn">Test backend</button>
       </div>
-      <div class="status-line" id="backendStatus">Hệ thống: chỉ lưu trên máy</div>
+      <div class="status" id="adminStatus"></div>
     </div>
   </section>
 </main>
 
-<nav class="bottom"><button type="button" data-tab="captureTab" class="active">Ghi nhận</button><button type="button" data-tab="outputTab">Kết quả</button></nav>
-<iframe name="pefsoHiddenFrame" id="pefsoHiddenFrame" class="hidden"></iframe>
-
-<div class="modal" id="editModal">
-  <div class="modal-card">
-    <div class="modal-head">
-      <div><div class="sub">Sửa ghi nhận</div><h2 style="font-size:20px;margin:2px 0 0" id="editTitle">Ghi nhận</h2></div>
-      <button class="btn light" id="closeEditBtn" type="button">Đóng</button>
-    </div>
-    <div class="modal-body">
-      <label class="edit-photo" for="editPhotoInput"><span id="editPhotoText">Đổi / thêm ảnh</span><img id="editPhotoPreview" class="hidden" alt="preview"></label>
-      <input class="hidden" id="editPhotoInput" type="file" accept="image/*">
-      <textarea id="editRawText" placeholder="Nội dung ghi chú"></textarea>
-      <div class="link-row show"><input id="editLinkUrl" placeholder="Link nếu có"><input id="editLinkTitle" placeholder="Tên link nếu cần"></div>
-      <div class="actions">
-        <button class="btn orange" id="saveEditBtn" type="button">Lưu sửa</button>
-        <button class="btn blue" id="toggleUrgentEditBtn" type="button">Bật/tắt gấp</button>
-        <button class="btn light" id="copyEditBriefBtn" type="button">Copy tóm tắt</button>
-        <button class="btn light" id="copyEditReplyBtn" type="button">Copy tin nhắn</button>
-        <button class="btn red" id="deleteEditBtn" type="button">Xóa ghi nhận</button>
-      </div>
-      <div class="result show" id="editRewardBox"></div>
-    </div>
-  </div>
-</div>
+<iframe name="hiddenFrame" class="hidden-frame"></iframe>
 
 <script>
 (function(){
   /*
     ================== CẤU HÌNH BACKEND ==================
-    1. Dán Web App URL của Apps Script vào DEFAULT_ENDPOINT.
-       URL phải kết thúc bằng /exec.
-    2. Nếu trong Apps Script có đặt APP_TOKEN, dán token giống hệt vào DEFAULT_TOKEN.
-       Nếu không dùng token, để DEFAULT_TOKEN = "".
+    Dán Web App URL của Apps Script vào đây trước khi upload GitHub Pages.
   */
-  var DEFAULT_ENDPOINT = "https://script.google.com/macros/s/AKfycbyIwRpqRC3FHUhkc5JCc17CidZLoLu89BS4gar9B8RzVuJ9HIhJsCJcPoOW7igQAReP/exec";
+  var DEFAULT_ENDPOINT = "https://script.google.com/macros/s/AKfycbzsWZHMsJ7GbcRhX_8PnGIy56Ef1uFT_aoEZuwTtg-Qc8YzYXJSp4ALpLO2cLEPWlshmw/exec";
   var DEFAULT_TOKEN = "";
   /* ================== HẾT CẤU HÌNH ================== */
 
-  var STORAGE_KEY = "pefso_drop_v4_vi";
-  var ENDPOINT_KEY = "pefso_drop_endpoint";
-  var TOKEN_KEY = "pefso_drop_token";
-  var isAdmin = new URLSearchParams(location.search).get("admin") === "1";
-  if(isAdmin) document.body.classList.add("admin");
-
-  var mode = "note";
-  var imageData = "";
-  var editImageData = "";
-  var editingId = "";
-  var savedEndpoint = localStorage.getItem(ENDPOINT_KEY) || "";
-  var endpoint = savedEndpoint || (DEFAULT_ENDPOINT.indexOf("http") === 0 ? DEFAULT_ENDPOINT : "");
+  var ENDPOINT_KEY = "pefso_saleskit_endpoint";
+  var TOKEN_KEY = "pefso_saleskit_token";
+  var endpoint = localStorage.getItem(ENDPOINT_KEY) || (DEFAULT_ENDPOINT.indexOf("http") === 0 ? DEFAULT_ENDPOINT : "");
   var appToken = localStorage.getItem(TOKEN_KEY) || DEFAULT_TOKEN || "";
-  var records = loadRecords();
+  var products = [];
+  var brand = {};
+  var selectedIds = new Set();
+  var latestProposalHtml = "";
+  var latestMatrixTsv = "";
+  var recentNotes = [];
+  var currentMode = "product_spotlight";
 
-  var productKeywords = ["rattan","mây","may","bamboo","tre","trúc","truc","basket","giỏ","gio","diffuser","reed","wall decor","decor","plate","tray","banneton","balloon","party","water hyacinth","lục bình","luc binh","cup","holder","spoon","utensil","packaging","sample","mẫu","mau"];
-  var supplierKeywords = ["xưởng","xuong","factory","supplier","workshop","làng nghề","lang nghe","nguồn","source","sản xuất","san xuat","gia công","gia cong","thợ","tho"];
-  var buyerKeywords = ["khách","khach","buyer","order","inquiry","hỏi","hoi","mua","deal","mail","email","trader","importer","amscan","maebata"];
-  var issueKeywords = ["lỗi","loi","fail","hỏng","hong","mốc","moc","delay","chậm","cham","ẩu","au","risk","rủi ro","rui ro","xấu","xau","cong","vênh","venh","không ổn","khong on"];
+  var modes = [
+    {id:"product_spotlight", vi:"Một sản phẩm cụ thể", en:"Product Spotlight", desc:"Khách hỏi một sản phẩm chính; gợi ý thêm sản phẩm cùng dòng."},
+    {id:"decor_display_collection", vi:"Bộ decor / trưng bày", en:"Decor & Display Collection", desc:"Trang trí, trưng bày, boutique, retail display, wall decor."},
+    {id:"natural_lifestyle_collection", vi:"Bộ home / lifestyle tự nhiên", en:"Natural Lifestyle Collection", desc:"Home, storage, tableware-adjacent, eco lifestyle retail."},
+    {id:"seasonal_promotional_volume", vi:"Hàng mùa vụ / quà tặng / số lượng", en:"Seasonal / Promotional Volume", desc:"Party, seasonal, gift, campaign, volume, OEM packaging."},
+    {id:"component_material_supply", vi:"Nguyên liệu / component", en:"Component / Material Supply", desc:"Vật liệu, component, repeat supply, consistency, QC."}
+  ];
 
   function $(id){ return document.getElementById(id); }
-  function esc(s){ return String(s || "").replace(/[&<>'"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;","\"":"&quot;"}[c]; }); }
-  function norm(s){ return String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); }
-  function uid(){ return "drop-" + Date.now() + "-" + Math.random().toString(36).slice(2,7); }
-  function loadRecords(){ try{ var saved = localStorage.getItem(STORAGE_KEY); return saved ? JSON.parse(saved) : []; }catch(e){ return []; } }
-  function persist(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(records)); render(); }
+  function esc(s){ return String(s||"").replace(/[&<>'"]/g, function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;","\"":"&quot;"}[c];});}
+  function norm(s){ return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,""); }
+  function uid(prefix){ return prefix + "-" + Date.now() + "-" + Math.random().toString(36).slice(2,6); }
 
-  function setMode(nextMode){
-    mode = nextMode;
-    $("captureForm").classList.add("show");
-    $("modeLabel").textContent = {photo:"Ảnh",note:"Ghi nhanh",link:"Dán link"}[mode] || "Ghi nhận mới";
-    $("photoBox").classList.toggle("show", mode === "photo");
-    $("linkRow").classList.toggle("show", mode === "link");
-    if(mode === "photo") setTimeout(function(){ $("photoInput").click(); }, 80);
-    setTimeout(function(){ $("rawText").focus(); }, 120);
-  }
-
-  function classify(raw){
-    var t = norm(raw);
-    var scores = {product:0, supplier:0, buyer:0, issue:0};
-    productKeywords.forEach(function(k){ if(t.indexOf(norm(k)) >= 0) scores.product++; });
-    supplierKeywords.forEach(function(k){ if(t.indexOf(norm(k)) >= 0) scores.supplier++; });
-    buyerKeywords.forEach(function(k){ if(t.indexOf(norm(k)) >= 0) scores.buyer++; });
-    issueKeywords.forEach(function(k){ if(t.indexOf(norm(k)) >= 0) scores.issue++; });
-    var guessed = "raw", max = 0;
-    Object.keys(scores).forEach(function(key){ if(scores[key] > max){ max = scores[key]; guessed = key; } });
-    var tags = [];
-    addIf(raw,tags,"rattan",["rattan","mây","may"]); addIf(raw,tags,"bamboo",["bamboo","tre","trúc","truc"]); addIf(raw,tags,"water-hyacinth",["water hyacinth","lục bình","luc binh"]);
-    addIf(raw,tags,"diffuser",["diffuser","reed","fragrance","hương","huong"]); addIf(raw,tags,"basket",["basket","giỏ","gio","storage"]); addIf(raw,tags,"wall-decor",["wall","tường","tuong","decor"]);
-    addIf(raw,tags,"party",["party","balloon","seasonal","bóng bay","bong bay"]); addIf(raw,tags,"qc-risk",issueKeywords); addIf(raw,tags,"supplier",supplierKeywords); addIf(raw,tags,"buyer",buyerKeywords);
-    addIf(raw,tags,"us",["us","mỹ","my","america","amscan"]); addIf(raw,tags,"japan",["japan","nhật","nhat","maebata"]); addIf(raw,tags,"france",["france","pháp","phap","french"]);
-    tags = Array.from(new Set(tags));
-    var priority = tags.indexOf("qc-risk") >= 0 ? "urgent" : "normal";
-    var product_family = family(tags);
-    return {
-      guessed_type: guessed,
-      auto_tags: tags,
-      auto_summary: summary(guessed,tags),
-      next_action: action(guessed,priority),
-      priority: priority,
-      source:"local",
-      deal_stage: guessed === "buyer" ? "inquiry" : "",
-      buyer_need: guessed === "buyer" ? "làm rõ thông số, số lượng và thời hạn" : "",
-      supplier_risk: guessed === "supplier" || priority === "urgent" ? "medium" : "",
-      qc_risk: priority === "urgent" ? "high" : "",
-      product_family: product_family,
-      proposal_fit: guessed === "product" || guessed === "buyer" ? "maybe" : "",
-      follow_up_questions: questions(guessed,tags),
-      reply_draft: replyDraft(guessed,tags)
-    };
-  }
-  function addIf(raw,tags,tag,keys){ var t = norm(raw); if(keys.some(function(k){ return t.indexOf(norm(k)) >= 0; })) tags.push(tag); }
-  function family(tags){
-    if(tags.indexOf("diffuser") >= 0) return "fragrance";
-    if(tags.indexOf("basket") >= 0) return "basket-storage";
-    if(tags.indexOf("wall-decor") >= 0) return "wall-decor";
-    if(tags.indexOf("party") >= 0) return "party-decor";
-    if(tags.indexOf("bamboo") >= 0) return "bamboo";
-    if(tags.indexOf("water-hyacinth") >= 0) return "water-hyacinth";
-    return "";
-  }
-  function summary(type,tags){ var label = {product:"Sản phẩm",supplier:"Xưởng/nguồn",buyer:"Khách hỏi",issue:"Vấn đề/rủi ro",raw:"Ghi nhận thô"}[type] || "Ghi nhận thô"; return label + " · " + (tags.length ? tags.slice(0,4).map(tagVi).join(" / ") : "cần phân loại"); }
-  function action(type,priority){ if(priority==="urgent") return "Cần kiểm tra trước khi đưa vào proposal hoặc sản xuất."; if(type==="product") return "Có thể rà soát để đưa vào ma trận sản phẩm hoặc shortlist proposal."; if(type==="supplier") return "Có thể rà soát để đưa vào hồ sơ nguồn/xưởng và theo dõi sourcing."; if(type==="buyer") return "Có thể rà soát để cập nhật hồ sơ khách và hướng proposal."; if(type==="issue") return "Cần rà soát như một rủi ro QC/giao hàng."; return "Cần rà soát và phân loại sau."; }
-  function questions(type,tags){
-    if(tags.indexOf("diffuser") >= 0) return ["Xác nhận đường kính, chiều dài và cách đóng gói.", "Có yêu cầu về độ hút hương, độ khô hoặc chống mốc không?", "Số lượng dự kiến và khả năng cung ứng lặp lại là bao nhiêu?"];
-    if(type === "supplier") return ["Có ảnh hàng tương tự đã làm gần đây không?", "Có thể làm mẫu trước khi báo giá không?", "Hiện tại năng lực nhận hàng và thời gian giao mẫu là bao lâu?"];
-    if(type === "buyer") return ["Khách cần thông số/kích thước cụ thể nào?", "Số lượng, mức giá mục tiêu và yêu cầu đóng gói là gì?", "Thời hạn cần mẫu và thời hạn giao hàng dự kiến là khi nào?"];
-    if(tags.indexOf("wall-decor") >= 0) return ["Cần xác nhận kích thước, form dáng và tiêu chuẩn hoàn thiện.", "Cần kiểm chất lượng mối nối, mép và bề mặt hoàn thiện.", "Cần làm rõ yêu cầu lắp đặt và đóng gói."];
-    if(type === "issue") return ["Nguyên nhân gốc của lỗi là gì?", "Lỗi này liên quan tới xưởng/đơn hàng/mẫu nào?", "Rủi ro này có thể lặp lại ở đơn sau không?"];
-    return ["Ghi nhận này liên quan tới sản phẩm, xưởng, khách hay rủi ro?", "Có buyer/supplier cụ thể nào liên quan không?", "Cần dùng ghi nhận này cho proposal, sample, sourcing hay QC?"];
-  }
-  function replyDraft(type,tags){
-    if(type === "buyer") return "Thank you for your inquiry. Could you please confirm the product specification, expected quantity, packaging requirement, and target delivery schedule so that PEFSO can check production feasibility and sample options?";
-    if(type === "supplier") return "Could you please confirm whether your workshop can make a sample, share recent photos of similar products, and advise your current production capacity and estimated sample lead time?";
-    if(tags.indexOf("diffuser") >= 0) return "Could you please confirm the stick diameter, length, packaging format, expected quantity, and any requirements for absorption, drying, or mold control?";
-    if(tags.indexOf("wall-decor") >= 0) return "Could you please confirm the size, shape, finishing standard, installation requirement, packaging method, and expected quantity for this wall decoration item?";
-    return "Thank you for the information. PEFSO will review the product direction, technical requirements, sourcing feasibility, and next steps accordingly.";
+  function jsonp(action, params, cb){
+    if(!endpoint){ cb({ok:false,error:"Chưa cấu hình backend"}); return; }
+    var callbackName = "pefso_cb_" + Math.random().toString(36).slice(2);
+    params = params || {};
+    params.action = action;
+    params.callback = callbackName;
+    params.token = appToken;
+    var qs = Object.keys(params).map(function(k){ return encodeURIComponent(k) + "=" + encodeURIComponent(params[k] || ""); }).join("&");
+    window[callbackName] = function(data){ cb(data); delete window[callbackName]; script.remove(); };
+    var script = document.createElement("script");
+    script.src = endpoint + "?" + qs;
+    script.onerror = function(){ cb({ok:false,error:"Không tải được backend"}); delete window[callbackName]; script.remove(); };
+    document.body.appendChild(script);
   }
 
-  function makeRecord(rawText, image, linkUrl, linkTitle, inputType, urgent, existingId){
-    var local = classify([rawText,linkUrl,linkTitle].join(" "));
-    var record = {
-      id: existingId || uid(),created_at:new Date().toISOString(),input_type:inputType,raw_text:rawText,image:image,link_url:linkUrl,link_title:linkTitle,
-      guessed_type:local.guessed_type,auto_tags:local.auto_tags,auto_summary:local.auto_summary,next_action:local.next_action,priority:urgent ? "urgent" : local.priority,status:"raw",source:"local",
-      deal_stage:local.deal_stage,buyer_need:local.buyer_need,supplier_risk:local.supplier_risk,qc_risk:local.qc_risk,product_family:local.product_family,proposal_fit:local.proposal_fit,
-      follow_up_questions:local.follow_up_questions,reply_draft:local.reply_draft
-    };
-    return record;
-  }
-
-  function saveDrop(urgent){
-    var text = $("rawText").value.trim(), link = $("linkUrl").value.trim();
-    if(!text && !imageData && !link){ showResult("Chưa có dữ liệu để lưu.", null); return; }
-    var record = makeRecord(text, imageData, link, $("linkTitle").value.trim(), mode, urgent, "");
-    record.similar = findSimilar(record.auto_tags, record.id);
-    records.unshift(record); persist(); showResult(endpoint ? "Đã lưu và gửi về hệ thống." : "Đã lưu trên máy.", record); $("outputBox").textContent = brief(record);
-    if(endpoint) postToBackend(record);
-    clearForm(false);
-  }
-
-  function findSimilar(tags, excludeId){
-    if(!tags || !tags.length) return [];
-    return records.filter(function(r){
-      if(r.id === excludeId) return false;
-      return (r.auto_tags || []).some(function(t){ return tags.indexOf(t) >= 0; });
-    }).slice(0,3).map(function(r){ return r.auto_summary; });
-  }
-
-  function postToBackend(record){
-    var payload = JSON.stringify({action:"saveDrop",token:appToken,record:record});
+  function post(action, payload){
+    if(!endpoint) return;
+    payload.action = action;
+    payload.token = appToken;
     var form = document.createElement("form");
-    form.method = "POST"; form.action = endpoint; form.target = "pefsoHiddenFrame"; form.style.display = "none";
-    var input = document.createElement("input"); input.name = "payload"; input.value = payload;
+    form.method = "POST"; form.action = endpoint; form.target = "hiddenFrame"; form.style.display = "none";
+    var input = document.createElement("input");
+    input.name = "payload"; input.value = JSON.stringify(payload);
     form.appendChild(input); document.body.appendChild(form); form.submit();
     setTimeout(function(){ try{document.body.removeChild(form);}catch(e){} }, 1000);
   }
 
-  function clearForm(hideResult){ imageData=""; $("photoPreview").src=""; $("photoPreview").classList.add("hidden"); $("photoText").classList.remove("hidden"); $("photoInput").value=""; $("rawText").value=""; $("linkUrl").value=""; $("linkTitle").value=""; if(hideResult) $("resultBox").classList.remove("show"); }
-  function showResult(title,item){
-    var box=$("resultBox"); if(!item){box.innerHTML=esc(title);box.classList.add("show");return;}
-    box.innerHTML="<b>"+esc(title)+"</b>"+ rewardHtml(item);
-    box.classList.add("show");
+  function init(){
+    $("endpointInput").value = endpoint;
+    $("tokenInput").value = appToken;
+    renderModes();
+    bindEvents();
+    loadData();
   }
-  function rewardHtml(item){
-    var qs=(item.follow_up_questions||[]).map(function(q){return "<li>"+esc(q)+"</li>";}).join("");
-    var sim=(item.similar||[]).map(function(s){return "<li>"+esc(s)+"</li>";}).join("");
-    return "<div style='margin-top:6px'>"+esc(summaryVi(item))+"</div><div style='margin-top:6px'>"+esc(item.next_action)+"</div><div class='chips'>"+chips(item.auto_tags,item.priority,item.source)+"</div>"+
-      "<div class='reward'><div class='reward-box'><b>Cần hỏi tiếp</b><ol>"+qs+"</ol></div><div class='reward-box'><b>Tin nhắn tiếng Anh có thể gửi khách/xưởng</b><div class='reply'>"+esc(item.reply_draft)+"</div><div class='actions'><button class='btn light' type='button' onclick='navigator.clipboard && navigator.clipboard.writeText("+JSON.stringify(item.reply_draft)+")'>Copy tin nhắn</button></div></div>"+
-      (sim ? "<div class='reward-box'><b>Ghi nhận liên quan</b><ol>"+sim+"</ol></div>" : "")+"</div>";
+
+  function bindEvents(){
+    document.querySelectorAll(".tab-btn").forEach(function(b){ b.addEventListener("click", function(){ switchTab(b.getAttribute("data-tab")); }); });
+    $("saveConfigBtn").addEventListener("click", saveConfig);
+    $("reloadDataBtn").addEventListener("click", loadData);
+    $("testBackendBtn").addEventListener("click", function(){ jsonp("ping", {}, function(r){ $("adminStatus").textContent = r.ok ? "Backend OK" : ("Lỗi: " + r.error); }); });
+    $("suggestBtn").addEventListener("click", suggestProducts);
+    $("buildBtn").addEventListener("click", buildSalesKit);
+    $("clearSelectionBtn").addEventListener("click", function(){ selectedIds.clear(); renderSuggestedProducts(); });
+    $("productSearch").addEventListener("input", renderSuggestedProducts);
+    $("allProductSearch").addEventListener("input", renderAllProducts);
+    $("saveNoteBtn").addEventListener("click", saveFieldNote);
   }
-  function brief(item){ return ["[PEFSO GHI NHẬN]","ID: "+item.id,"Ngày: "+fmt(item.created_at),"Đầu vào: "+typeVi(item.input_type),"Loại: "+typeVi(item.guessed_type),"Ưu tiên: "+(item.priority==="urgent"?"Gấp":"Bình thường"),"Tóm tắt: "+summaryVi(item),"Việc tiếp theo: "+item.next_action,"Cần hỏi tiếp: "+(item.follow_up_questions||[]).join(" | "),"Tin nhắn tiếng Anh có thể gửi: "+(item.reply_draft||""),"Nội dung gốc: "+(item.raw_text||""),"Link: "+(item.link_url||""),"Tags: "+(item.auto_tags||[]).join(", "),"Nguồn: "+(item.source||"local")].join("\n"); }
-  function typeVi(t){ return {photo:"Ảnh",note:"Ghi nhanh",link:"Link",product:"Sản phẩm",supplier:"Xưởng/nguồn",buyer:"Khách hỏi",issue:"Vấn đề/rủi ro",raw:"Ghi nhận thô",urgent:"Gấp",normal:"Bình thường"}[t] || t; }
-  function tagVi(t){
-    var map = {
-      "rattan":"mây", "bamboo":"tre", "water-hyacinth":"lục bình", "diffuser":"que khuếch tán",
-      "basket":"giỏ/khay", "wall-decor":"trang trí tường", "party":"đồ tiệc", "qc-risk":"rủi ro chất lượng",
-      "supplier":"xưởng/nguồn", "buyer":"khách hỏi", "us":"Mỹ", "japan":"Nhật", "france":"Pháp",
-      "test":"test"
+
+  function switchTab(id){
+    document.querySelectorAll(".tab").forEach(function(t){ t.classList.remove("active"); });
+    document.querySelectorAll(".tab-btn").forEach(function(b){ b.classList.remove("active"); });
+    $(id).classList.add("active");
+    document.querySelector('[data-tab="'+id+'"]').classList.add("active");
+  }
+
+  function saveConfig(){
+    endpoint = $("endpointInput").value.trim();
+    appToken = $("tokenInput").value.trim();
+    localStorage.setItem(ENDPOINT_KEY, endpoint);
+    localStorage.setItem(TOKEN_KEY, appToken);
+    $("adminStatus").textContent = "Đã lưu cấu hình.";
+    loadData();
+  }
+
+  function loadData(){
+    if(!endpoint){ $("suggestStatus").textContent = "Chưa cấu hình backend. Vào tab Cấu hình."; return; }
+    $("suggestStatus").textContent = "Đang tải Product Master...";
+    jsonp("getAppData", {}, function(res){
+      if(!res.ok){ $("suggestStatus").textContent = "Lỗi tải dữ liệu: " + res.error; return; }
+      products = res.products || [];
+      brand = res.brand || {};
+      applyBrand();
+      $("suggestStatus").textContent = "Đã tải " + products.length + " sản phẩm.";
+      renderSuggestedProducts();
+      renderAllProducts();
+    });
+  }
+
+  function applyBrand(){
+    document.documentElement.style.setProperty("--orange", brand.primary_color || "#ed7a1a");
+    document.documentElement.style.setProperty("--green", brand.secondary_color || "#133d35");
+    if(brand.logo_url){
+      $("brandLogo").innerHTML = '<img src="'+esc(brand.logo_url)+'" alt="PEFSO">';
+    }
+  }
+
+  function renderModes(){
+    $("modeGrid").innerHTML = modes.map(function(m){
+      return '<div class="mode '+(m.id===currentMode?'active':'')+'" data-mode="'+m.id+'"><b>'+m.vi+'</b><span>'+m.desc+'</span></div>';
+    }).join("");
+    document.querySelectorAll(".mode").forEach(function(el){
+      el.addEventListener("click", function(){
+        currentMode = el.getAttribute("data-mode");
+        renderModes();
+        suggestProducts();
+      });
+    });
+  }
+
+  function suggestProducts(){
+    if(!products.length){ $("suggestStatus").textContent = "Chưa có dữ liệu sản phẩm."; return; }
+    var brief = $("buyerBrief").value;
+    var count = parseInt($("productCount").value || "8", 10);
+    selectedIds = new Set(scoreProducts(brief, currentMode).slice(0,count).map(function(x){ return x.product_id; }));
+    $("suggestStatus").textContent = "Đã gợi ý " + selectedIds.size + " sản phẩm. Có thể bỏ tick hoặc tìm thêm.";
+    renderSuggestedProducts();
+  }
+
+  function scoreProducts(brief, mode){
+    var q = norm(brief);
+    return products.map(function(p){
+      var score = 0;
+      var modes = String(p.proposal_modes || "");
+      if(modes.indexOf(mode) >= 0) score += 50;
+      if(String(p.hero_product_flag || "").toLowerCase() === "yes") score += 8;
+      if(String(p.priority || "").toUpperCase() === "A") score += 6;
+      var hay = norm([p.product_name_en,p.product_name_vi,p.product_group,p.material,p.style_tags,p.buyer_fit_en,p.use_case_en,p.short_description_en,p.short_description_vi].join(" "));
+      q.split(/\s+/).forEach(function(w){ if(w.length > 2 && hay.indexOf(w) >= 0) score += 4; });
+      if(mode === "product_spotlight" && hay.indexOf(q) >= 0) score += 30;
+      return Object.assign({}, p, {_score:score});
+    }).sort(function(a,b){ return (b._score||0)-(a._score||0); });
+  }
+
+  function filteredProductsForDisplay(){
+    var s = norm($("productSearch").value);
+    var sorted = scoreProducts($("buyerBrief").value, currentMode);
+    if(!s) return sorted.slice(0,24);
+    return sorted.filter(function(p){ return norm(Object.values(p).join(" ")).indexOf(s) >= 0; }).slice(0,30);
+  }
+
+  function renderSuggestedProducts(){
+    var list = filteredProductsForDisplay();
+    $("productGrid").innerHTML = list.map(productCard).join("");
+    bindProductChecks();
+  }
+
+  function renderAllProducts(){
+    var s = norm($("allProductSearch").value);
+    var list = products.filter(function(p){ return !s || norm(Object.values(p).join(" ")).indexOf(s)>=0; }).slice(0,80);
+    $("allProductGrid").innerHTML = list.map(productCard).join("");
+    bindProductChecks();
+  }
+
+  function bindProductChecks(){
+    document.querySelectorAll("[data-product-check]").forEach(function(ch){
+      ch.addEventListener("change", function(){
+        var id = ch.getAttribute("data-product-check");
+        if(ch.checked) selectedIds.add(id); else selectedIds.delete(id);
+        renderSuggestedProducts();
+        renderAllProducts();
+      });
+    });
+  }
+
+  function productCard(p){
+    var imgUrl = p.image_main || p.main_square_url || ''; var img = imgUrl ? '<img src="'+esc(imgUrl)+'" alt="">' : 'ẢNH<br>CHƯA CÓ';
+    var checked = selectedIds.has(p.product_id) ? "checked" : "";
+    var reason = reasonFor(p);
+    return '<div class="product">'+
+      '<input type="checkbox" data-product-check="'+esc(p.product_id)+'" '+checked+'>'+
+      '<div class="pimg">'+img+'</div>'+
+      '<div><h3>'+esc(p.product_name_en||p.product_name_vi||p.product_id)+'</h3>'+
+      '<div class="meta">'+esc(p.product_group||"")+' · '+esc(p.material||"")+'</div>'+
+      '<div class="reason">'+esc(reason)+'</div>'+
+      '<div><span class="pill">'+esc(p.priority||"")+'</span><span class="pill">'+esc(p.product_id||"")+'</span></div></div></div>';
+  }
+
+  function reasonFor(p){
+    if(currentMode === "component_material_supply") return "Phù hợp khi khách cần thông số ổn định, repeat supply và kiểm soát chất lượng.";
+    if(currentMode === "decor_display_collection") return "Phù hợp cho hướng decor/trưng bày nhờ texture tự nhiên và vai trò thị giác.";
+    if(currentMode === "natural_lifestyle_collection") return "Phù hợp cho home/lifestyle retail, tính công năng và chất liệu tự nhiên.";
+    if(currentMode === "seasonal_promotional_volume") return "Phù hợp cho campaign, quà tặng, đơn số lượng và tùy biến đóng gói.";
+    return "Sản phẩm chính hoặc cùng dòng, có thể dùng làm spotlight và gợi ý mở rộng.";
+  }
+
+  function getSelectedProducts(){
+    return products.filter(function(p){ return selectedIds.has(p.product_id); });
+  }
+
+  function modeObj(){
+    return modes.find(function(m){ return m.id===currentMode; }) || modes[0];
+  }
+
+  function buildSalesKit(){
+    var sel = getSelectedProducts();
+    if(!sel.length){ alert("Chưa chọn sản phẩm."); return; }
+    var buyer = getBuyer();
+    latestMatrixTsv = matrixTsv(sel);
+    latestProposalHtml = proposalHtml(buyer, sel);
+    $("previewArea").innerHTML =
+      '<div class="preview-wrap"><div class="preview-toolbar">'+
+      '<button class="btn orange" onclick="window.print()">In / Lưu PDF</button>'+
+      '<button class="btn light" id="copyMatrixBtn">Copy matrix</button>'+
+      '<button class="btn light" id="saveTrackingBtn">Lưu vào tracker</button>'+
+      '</div><div class="proposal">'+latestProposalHtml+'</div></div>';
+    $("copyMatrixBtn").addEventListener("click", function(){ navigator.clipboard && navigator.clipboard.writeText(latestMatrixTsv); });
+    $("saveTrackingBtn").addEventListener("click", function(){ saveTracking(buyer, sel); });
+    document.getElementById("previewArea").scrollIntoView({behavior:"smooth"});
+  }
+
+  function getBuyer(){
+    return {
+      company:$("buyerCompany").value.trim(),
+      contact:$("contactName").value.trim(),
+      email:$("buyerEmail").value.trim(),
+      country:$("country").value.trim(),
+      brief:$("buyerBrief").value.trim(),
+      mode:currentMode,
+      mode_vi:modeObj().vi,
+      mode_en:modeObj().en
     };
-    return map[t] || t;
-  }
-  function tagsVi(tags){
-    return (tags || []).map(tagVi);
-  }
-  function summaryVi(item){
-    var label = typeVi(item.guessed_type);
-    var tags = tagsVi(item.auto_tags || []).slice(0,4);
-    return label + " · " + (tags.length ? tags.join(" / ") : "cần phân loại");
-  }
-  function tsv(list){ var header="id\tcreated_at\tinput_type\tguessed_type\tpriority\tauto_summary\tnext_action\traw_text\tlink_url\ttags\tsource\tdeal_stage\tbuyer_need\tsupplier_risk\tqc_risk\tproduct_family\tproposal_fit\tfollow_up_questions\treply_draft"; var rows=list.map(function(x){ return [x.id,x.created_at,x.input_type,x.guessed_type,x.priority,x.auto_summary,x.next_action,x.raw_text||"",x.link_url||"",(x.auto_tags||[]).join(", "),x.source||"",x.deal_stage||"",x.buyer_need||"",x.supplier_risk||"",x.qc_risk||"",x.product_family||"",x.proposal_fit||"",(x.follow_up_questions||[]).join(" | "),x.reply_draft||""].map(clean).join("\t"); }); return [header].concat(rows).join("\n"); }
-  function clean(s){ return String(s||"").replace(/[\t\n\r]+/g," "); }
-  function fmt(iso){ try{return new Date(iso).toLocaleString("vi-VN",{hour12:false});}catch(e){return iso||"";} }
-  function chips(tags,priority,source){ var html=(tags||[]).map(function(t){return "<span class='chip'>"+esc(tagVi(t))+"</span>";}).join(""); if(priority==="urgent") html+="<span class='chip red'>gấp</span>"; if(source==="gemini") html+="<span class='chip blue'>AI</span>"; return html; }
-  function copy(text){ if(navigator.clipboard) navigator.clipboard.writeText(text).catch(function(){}); }
-
-  function openEdit(id){
-    var r = records.find(function(x){ return x.id === id; });
-    if(!r) return;
-    editingId = id;
-    editImageData = r.image || "";
-    $("editTitle").textContent = summaryVi(r) || "Ghi nhận";
-    $("editRawText").value = r.raw_text || "";
-    $("editLinkUrl").value = r.link_url || "";
-    $("editLinkTitle").value = r.link_title || "";
-    if(editImageData){ $("editPhotoPreview").src = editImageData; $("editPhotoPreview").classList.remove("hidden"); $("editPhotoText").classList.add("hidden"); }
-    else { $("editPhotoPreview").src = ""; $("editPhotoPreview").classList.add("hidden"); $("editPhotoText").classList.remove("hidden"); }
-    $("editRewardBox").innerHTML = rewardHtml(r);
-    $("editModal").classList.add("show");
-  }
-  function closeEdit(){ $("editModal").classList.remove("show"); editingId=""; editImageData=""; }
-  function saveEdit(){
-    var idx = records.findIndex(function(x){ return x.id === editingId; });
-    if(idx < 0) return;
-    var old = records[idx];
-    var urgent = old.priority === "urgent";
-    var updated = makeRecord($("editRawText").value.trim(), editImageData, $("editLinkUrl").value.trim(), $("editLinkTitle").value.trim(), old.input_type, urgent, old.id);
-    updated.created_at = old.created_at;
-    updated.updated_at = new Date().toISOString();
-    updated.status = "edited";
-    updated.similar = findSimilar(updated.auto_tags, updated.id);
-    records[idx] = updated;
-    persist();
-    $("editTitle").textContent = summaryVi(updated);
-    $("editRewardBox").innerHTML = rewardHtml(updated);
-    $("outputBox").textContent = brief(updated);
-    if(endpoint) postToBackend(updated);
-  }
-  function toggleUrgentEdit(){
-    var idx = records.findIndex(function(x){ return x.id === editingId; });
-    if(idx < 0) return;
-    records[idx].priority = records[idx].priority === "urgent" ? "normal" : "urgent";
-    records[idx].updated_at = new Date().toISOString();
-    persist();
-    $("editRewardBox").innerHTML = rewardHtml(records[idx]);
-    if(endpoint) postToBackend(records[idx]);
-  }
-  function deleteEdit(){
-    if(!editingId) return;
-    if(!confirm("Xóa ghi nhận này?")) return;
-    records = records.filter(function(x){ return x.id !== editingId; });
-    persist();
-    closeEdit();
   }
 
-  function render(){ renderRecords(); renderStats(); updateStatus(); }
-  function renderRecords(){ var q=norm($("searchInput").value); var list=records.filter(function(r){ var hay=norm([r.raw_text,r.link_url,r.link_title,r.guessed_type,r.auto_summary,r.next_action,(r.auto_tags||[]).join(" "),r.priority,r.source,r.reply_draft].join(" ")); return !q || hay.indexOf(q)>=0; }); $("recordList").innerHTML=list.map(card).join(""); $("emptyBox").classList.toggle("hidden", list.length>0); document.querySelectorAll("[data-edit-id]").forEach(function(el){ el.addEventListener("click", function(){ openEdit(el.getAttribute("data-edit-id")); }); }); }
-  function card(r){ var img=r.image ? "<img src='"+r.image+"' alt=''>" : (r.input_type==="photo"?"ẢNH":r.input_type==="link"?"LINK":"TXT"); return "<div class='record' data-edit-id='"+esc(r.id)+"'><div class='thumb'>"+img+"</div><div><h3>"+esc(summaryVi(r))+"</h3><div class='meta'>"+esc(fmt(r.created_at))+" · "+esc(r.priority==="urgent"?"gấp":"bình thường")+" · "+esc(r.source||"local")+"</div><div class='note'>"+esc(r.raw_text||r.link_url||"")+"</div><div>"+chips((r.auto_tags||[]).slice(0,3),r.priority==="urgent"?"urgent":"",r.source==="gemini"?"gemini":"")+"</div></div></div>"; }
-  function renderStats(){ $("totalCount").textContent=records.length; $("urgentCount").textContent=records.filter(function(x){return x.priority==="urgent";}).length; $("productCount").textContent=records.filter(function(x){return x.guessed_type==="product";}).length; $("supplierCount").textContent=records.filter(function(x){return x.guessed_type==="supplier";}).length; }
-  function updateStatus(){ endpoint=localStorage.getItem(ENDPOINT_KEY)||endpoint; appToken=localStorage.getItem(TOKEN_KEY)||appToken; $("endpointInput").value=endpoint; $("tokenInput").value=appToken; $("backendStatus").textContent=endpoint ? "Hệ thống: đã cấu hình" : "Hệ thống: chỉ lưu trên máy"; }
+  function proposalHtml(buyer, sel){
+    var coverImg = firstImage(sel);
+    var logo = brand.logo_url ? '<img class="proposal-logo" src="'+esc(brand.logo_url)+'">' : '<div style="font-size:34px;font-weight:900;color:var(--orange)">pefso</div>';
+    var title = titleFor(buyer);
+    var context = buyer.brief || "The buyer is exploring suitable natural-material product directions from PEFSO.";
+    return ''+
+    '<section class="slide cover"><div>'+logo+'<div class="orange-bar"></div><h1>'+esc(title)+'</h1><p style="font-size:18px;line-height:1.55;color:#405149">Prepared for '+esc(buyer.company||"Buyer")+'</p><p style="color:#68746d">'+esc(buyer.country||"")+'</p></div><div class="cover-art">'+(coverImg?'<img src="'+esc(coverImg)+'">':'PEFSO PRODUCT IMAGE')+'</div></section>'+
+    '<section class="slide"><h2 class="section-title">Buyer Context & Recommended Direction</h2><div class="two-col"><div class="box"><h3>Buyer Context</h3><p>'+esc(context)+'</p></div><div class="box"><h3>Recommended Direction</h3><p>'+esc(directionText(buyer))+'</p></div></div><div class="box" style="margin-top:18px"><h3>Why PEFSO</h3><ul><li>Vietnam-based natural-material sourcing and OEM/ODM coordination.</li><li>Suitable for sample development, pilot orders and repeat supply programs.</li><li>Product directions can be customized by material, size, finishing, packaging and buyer application.</li></ul></div></section>'+
+    '<section class="slide"><h2 class="section-title">Recommended Product Collection</h2><div class="proposal-products">'+sel.slice(0,6).map(proposalProductCard).join("")+'</div></section>'+
+    (sel.length>6?'<section class="slide"><h2 class="section-title">Additional Product Options</h2><div class="proposal-products">'+sel.slice(6,12).map(proposalProductCard).join("")+'</div></section>':'')+
+    '<section class="slide"><h2 class="section-title">Product Matrix</h2>'+matrixTable(sel)+'</section>'+
+    fieldEvidenceSlide(sel)+
+    '<section class="slide"><h2 class="section-title">Customization & Next Steps</h2><div class="two-col"><div class="box"><h3>Customization Options</h3><ul><li>Material, size, shape and finishing adaptation.</li><li>Packaging format and buyer branding direction.</li><li>Sample development based on target use case.</li></ul></div><div class="box"><h3>Next Steps</h3><ul><li>Confirm preferred product directions.</li><li>Define sample specifications, quantity and packaging.</li><li>Align target timeline for sample and pilot order.</li></ul></div></div><div style="position:absolute;bottom:46px;left:58px;right:58px;color:#68746d;font-size:14px">'+contactBlock()+'</div></section>';
+  }
 
-  function compress(file,done){ var reader=new FileReader(); reader.onload=function(ev){ var img=new Image(); img.onload=function(){ var max=900,w=img.width,h=img.height; if(w>h&&w>max){h=Math.round(h*max/w);w=max;} else if(h>=w&&h>max){w=Math.round(w*max/h);h=max;} var canvas=document.createElement("canvas"); canvas.width=w; canvas.height=h; canvas.getContext("2d").drawImage(img,0,0,w,h); done(canvas.toDataURL("image/jpeg",0.70)); }; img.src=ev.target.result; }; reader.readAsDataURL(file); }
-  function exportJson(){ var blob=new Blob([JSON.stringify(records,null,2)],{type:"application/json"}); var url=URL.createObjectURL(blob); var a=document.createElement("a"); a.href=url; a.download="pefso-ghi-nhan-"+new Date().toISOString().slice(0,10)+".json"; a.click(); URL.revokeObjectURL(url); }
+  function titleFor(buyer){
+    if(buyer.mode==="product_spotlight") return "Focused Product Proposal";
+    if(buyer.mode==="decor_display_collection") return "Natural Decor & Display Product Direction";
+    if(buyer.mode==="natural_lifestyle_collection") return "Natural Lifestyle Product Collection";
+    if(buyer.mode==="seasonal_promotional_volume") return "Seasonal & Promotional Product Direction";
+    if(buyer.mode==="component_material_supply") return "Component & Material Supply Proposal";
+    return "PEFSO Product Proposal";
+  }
 
-  document.querySelectorAll("[data-mode]").forEach(function(btn){ btn.addEventListener("click",function(){ setMode(btn.getAttribute("data-mode")); }); });
-  $("photoInput").addEventListener("change",function(e){ var file=e.target.files&&e.target.files[0]; if(!file)return; compress(file,function(dataUrl){ imageData=dataUrl; $("photoPreview").src=imageData; $("photoPreview").classList.remove("hidden"); $("photoText").classList.add("hidden"); }); });
-  $("editPhotoInput").addEventListener("change",function(e){ var file=e.target.files&&e.target.files[0]; if(!file)return; compress(file,function(dataUrl){ editImageData=dataUrl; $("editPhotoPreview").src=editImageData; $("editPhotoPreview").classList.remove("hidden"); $("editPhotoText").classList.add("hidden"); }); });
-  $("saveBtn").addEventListener("click",function(){ saveDrop(false); });
-  $("urgentBtn").addEventListener("click",function(){ saveDrop(true); });
-  $("clearBtn").addEventListener("click",function(){ clearForm(true); });
-  $("searchInput").addEventListener("input",renderRecords);
-  $("copyLatestBtn").addEventListener("click",function(){ if(records.length){ var text=brief(records[0]); $("outputBox").textContent=text; copy(text); } });
-  $("copyReplyBtn").addEventListener("click",function(){ if(records.length){ var text=records[0].reply_draft || ""; $("outputBox").textContent=text; copy(text); } });
-  $("copyTsvBtn").addEventListener("click",function(){ var text=tsv(records); $("outputBox").textContent=text; copy(text); });
-  $("exportBtn").addEventListener("click",exportJson);
-  $("toggleConfigBtn").addEventListener("click",function(){ $("configBox").classList.toggle("show"); });
-  $("saveEndpointBtn").addEventListener("click",function(){ localStorage.setItem(ENDPOINT_KEY,$("endpointInput").value.trim()); localStorage.setItem(TOKEN_KEY,$("tokenInput").value.trim()); updateStatus(); });
-  $("clearEndpointBtn").addEventListener("click",function(){ localStorage.removeItem(ENDPOINT_KEY); localStorage.removeItem(TOKEN_KEY); updateStatus(); });
-  $("testSendBtn").addEventListener("click",function(){ var record=makeRecord("TEST - Xưởng Thái Bình làm decor rattan nhưng tháng 12 quá tải, rủi ro làm ẩu.","","","","note",true,""); record.source="local-test"; if(endpoint){ postToBackend(record); $("outputBox").textContent="Đã gửi test. Kiểm tra sheet raw_drops sau 5–15 giây."; } else { $("outputBox").textContent="Chưa cấu hình Backend URL."; } });
-  $("closeEditBtn").addEventListener("click",closeEdit);
-  $("editModal").addEventListener("click",function(e){ if(e.target.id==="editModal") closeEdit(); });
-  $("saveEditBtn").addEventListener("click",saveEdit);
-  $("toggleUrgentEditBtn").addEventListener("click",toggleUrgentEdit);
-  $("deleteEditBtn").addEventListener("click",deleteEdit);
-  $("copyEditBriefBtn").addEventListener("click",function(){ var r=records.find(function(x){return x.id===editingId;}); if(r) copy(brief(r)); });
-  $("copyEditReplyBtn").addEventListener("click",function(){ var r=records.find(function(x){return x.id===editingId;}); if(r) copy(r.reply_draft||""); });
-  document.querySelectorAll(".bottom button").forEach(function(btn){ btn.addEventListener("click",function(){ document.querySelectorAll(".bottom button").forEach(function(x){x.classList.remove("active");}); btn.classList.add("active"); document.querySelectorAll(".tab").forEach(function(t){t.classList.remove("active");}); $(btn.getAttribute("data-tab")).classList.add("active"); }); });
-  render();
+  function directionText(buyer){
+    if(buyer.mode==="product_spotlight") return "This proposal focuses on the buyer’s requested product and expands into related items from the same product family for easier review and sourcing discussion.";
+    if(buyer.mode==="decor_display_collection") return "The recommended direction emphasizes natural texture, handcrafted warmth and retail/display suitability for boutique or interior-oriented applications.";
+    if(buyer.mode==="natural_lifestyle_collection") return "The collection focuses on practical natural-material products for home, storage, lifestyle and tableware-adjacent retail.";
+    if(buyer.mode==="seasonal_promotional_volume") return "The direction prioritizes scalable, customizable and campaign-ready products suitable for seasonal, promotional and volume programs.";
+    if(buyer.mode==="component_material_supply") return "The proposal prioritizes stable specifications, material consistency, QC control and repeat supply potential.";
+    return "Selected products are recommended based on buyer context and PEFSO’s natural-material OEM/ODM capability.";
+  }
+
+  function firstImage(sel){ 
+    var p = sel.find(function(x){ return x.catalogue_wide_url || x.image_catalogue || x.image_gallery; });
+    if(p) return p.catalogue_wide_url || p.image_catalogue || String(p.image_gallery||"").split(",")[0].trim();
+    p = sel.find(function(x){ return x.image_main || x.main_square_url; }); 
+    return p ? (p.image_main || p.main_square_url) : ""; 
+  }
+  function proposalProductCard(p){
+    var imgUrl = p.image_main || p.main_square_url || ''; var img = imgUrl ? '<img src="'+esc(imgUrl)+'">' : 'IMAGE';
+    return '<div class="proposal-product"><div class="pimg">'+img+'</div><h3>'+esc(p.product_name_en||"")+'</h3><p style="font-size:12px;line-height:1.45;color:#405149">'+esc(p.short_description_en||p.use_case_en||"")+'</p><p style="font-size:12px;color:#68746d"><b>Material:</b> '+esc(p.material||"")+'</p></div>';
+  }
+
+  function fieldEvidenceSlide(sel){
+    var imgs = [];
+    sel.forEach(function(p){
+      [p.field_photo_1_url, p.field_photo_2_url].forEach(function(u){
+        if(u) imgs.push({url:u, name:p.product_name_en || p.product_id});
+      });
+    });
+    imgs = imgs.slice(0,6);
+    if(!imgs.length) return "";
+    return '<section class="slide"><h2 class="section-title">Real Work & Field Evidence</h2><p style="font-size:15px;line-height:1.55;color:#405149;margin-top:-8px;margin-bottom:20px">Selected field images can be included to show PEFSO’s practical sourcing, product development and real-work coordination capability.</p><div class="proposal-products">'+imgs.map(function(x){ return '<div class="proposal-product"><div class="pimg"><img src="'+esc(x.url)+'"></div><h3>'+esc(x.name)+'</h3><p style="font-size:12px;color:#68746d">Field / real-work reference</p></div>'; }).join("")+'</div></section>';
+  }
+
+  function matrixTable(sel){
+    return '<table><thead><tr><th>Product</th><th>Material</th><th>Use Case</th><th>Why Recommended</th><th>MOQ</th><th>Lead Time</th></tr></thead><tbody>'+
+      sel.map(function(p){ return '<tr><td><b>'+esc(p.product_name_en||"")+'</b></td><td>'+esc(p.material||"")+'</td><td>'+esc(p.use_case_en||"")+'</td><td>'+esc(whyRecommendedEn(p))+'</td><td>'+esc(p.moq_note||p.moq||"")+'</td><td>'+esc(p.lead_time||"")+'</td></tr>'; }).join("")+
+      '</tbody></table>';
+  }
+
+  function whyRecommendedEn(p){
+    if(currentMode === "component_material_supply") return "Relevant for specification-based sourcing, stable supply and repeat production.";
+    if(currentMode === "decor_display_collection") return "Adds natural texture and visual value for retail display or decoration programs.";
+    if(currentMode === "natural_lifestyle_collection") return "Fits natural home, storage and lifestyle retail applications.";
+    if(currentMode === "seasonal_promotional_volume") return "Suitable for customizable campaign, gift or volume-oriented programs.";
+    return "Relevant to the buyer’s requested product direction and related product family.";
+  }
+
+  function matrixTsv(sel){
+    var header = ["Product","Material","Use Case","Why Recommended","Customization Options","MOQ","Lead Time","Product ID"].join("\t");
+    var rows = sel.map(function(p){ return [p.product_name_en,p.material,p.use_case_en,whyRecommendedEn(p),p.customization_options_en,p.moq_note||p.moq,p.lead_time,p.product_id].map(function(x){ return String(x||"").replace(/[\t\r\n]+/g," "); }).join("\t"); });
+    return [header].concat(rows).join("\n");
+  }
+
+  function contactBlock(){
+    return [
+      brand.contact_name || "Thang MQ",
+      brand.contact_email || "thangmq@pefso.com",
+      brand.phone || "+84 946 535858",
+      brand.website || "www.pefso.com",
+      brand.address || "Kieu Ky - Gia Lam - Hanoi - Vietnam"
+    ].filter(Boolean).map(esc).join(" · ");
+  }
+
+  function saveTracking(buyer, sel){
+    post("saveSalesKit", {
+      buyer: buyer,
+      selected_product_ids: sel.map(function(p){ return p.product_id; }),
+      selected_products: sel,
+      proposal_mode: currentMode,
+      proposal_title: titleFor(buyer),
+      matrix_tsv: latestMatrixTsv,
+      generated_html: latestProposalHtml
+    });
+    alert("Đã gửi dữ liệu vào tracker. Kiểm tra Google Sheet sau vài giây.");
+  }
+
+  function saveFieldNote(){
+    var file = $("noteImage").files && $("noteImage").files[0];
+    var done = function(dataUrl){
+      var note = {
+        note_id: uid("note"), created_at: new Date().toISOString(),
+        note_type: $("noteType").value, name: $("noteName").value.trim(), location: $("noteLocation").value.trim(),
+        person: $("notePerson").value.trim(), raw_note: $("noteText").value.trim(), image: dataUrl || "",
+        status:"raw"
+      };
+      recentNotes.unshift(note);
+      renderRecentNotes();
+      post("saveFieldNote", {note:note});
+      $("noteStatus").textContent = "Đã lưu ghi nhận.";
+      ["noteName","noteLocation","notePerson","noteText"].forEach(function(id){ $(id).value=""; });
+      $("noteImage").value = "";
+    };
+    if(file) compressImage(file, done); else done("");
+  }
+
+  function renderRecentNotes(){
+    $("recentNotes").innerHTML = recentNotes.slice(0,12).map(function(n){
+      return '<div class="note-card"><h3>'+esc(n.name||n.note_type)+'</h3><p>'+esc(n.raw_note||"")+'</p><p>'+esc(n.location||"")+'</p></div>';
+    }).join("");
+  }
+
+  function compressImage(file, done){
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      var img = new Image();
+      img.onload = function(){
+        var max=1000,w=img.width,h=img.height;
+        if(w>h&&w>max){h=Math.round(h*max/w);w=max;} else if(h>=w&&h>max){w=Math.round(w*max/h);h=max;}
+        var c=document.createElement("canvas"); c.width=w; c.height=h; c.getContext("2d").drawImage(img,0,0,w,h);
+        done(c.toDataURL("image/jpeg",0.72));
+      };
+      img.src=ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  init();
 })();
 </script>
 </body>
