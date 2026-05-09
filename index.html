@@ -76,10 +76,11 @@
     .slide{min-height:620px;padding:54px 58px;border-bottom:1px solid #eadcc8;page-break-after:always;position:relative}
     .slide:last-child{border-bottom:0}
     .slide::before{content:"";position:absolute;top:0;left:0;right:0;height:12px;background:var(--orange)}
-    .proposal-logo{height:44px;max-width:160px;object-fit:contain}
+    .proposal-logo{height:76px;max-width:260px;object-fit:contain;display:block}
+    .proposal-date{display:inline-flex;margin-top:8px;border:1px solid #eadcc8;border-radius:999px;padding:6px 10px;background:#fffaf3;color:#68746d;font-size:12px;font-weight:750}
     .cover{display:grid;grid-template-columns:1.15fr .85fr;gap:36px;align-items:center}
-    .cover h1{font-size:44px;line-height:1.05;color:var(--green);margin:28px 0 12px}
-    .cover .orange-bar{width:120px;height:10px;background:var(--orange);border-radius:999px;margin:20px 0}
+    .cover h1{font-size:44px;line-height:1.05;color:var(--green);margin:24px 0 12px}
+    .cover .orange-bar{width:120px;height:10px;background:var(--orange);border-radius:999px;margin:18px 0}
     .cover-art{height:420px;border-radius:32px;background:#fff0df;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid #f0cfac}
     .cover-art img{width:100%;height:100%;object-fit:cover}
     .section-title{font-size:30px;margin:0 0 20px;color:var(--green)}
@@ -91,6 +92,16 @@
     .proposal-product{border:1px solid #eadcc8;border-radius:22px;padding:12px;background:#fffaf3}
     .proposal-product .pimg{width:100%;height:160px;margin-bottom:10px}
     .proposal-product h3{font-size:16px;margin:0 0 6px;color:var(--green)}
+    .proposal-product .product-line{font-size:11px;color:#68746d;line-height:1.35;margin:0 0 7px}
+    .production-mini{border:1px solid #eadcc8;background:#fff;border-radius:16px;padding:9px;margin-top:9px;display:grid;grid-template-columns:1fr 1fr;gap:7px}
+    .production-mini div{border-left:3px solid #ed7a1a;padding-left:7px;font-size:11px;line-height:1.35;color:#405149}
+    .production-mini b{display:block;color:#153d35;font-size:10px;text-transform:uppercase;letter-spacing:.02em;margin-bottom:2px}
+    .product-more-info{margin-top:8px;border-top:1px solid #eadcc8;padding-top:7px;font-size:11px;line-height:1.4;color:#405149}
+    .matrix-table{font-size:10.5px}.matrix-table th{font-size:10.5px}.matrix-table td{font-size:10.5px}
+    .proposal-contact-card{margin-top:24px;border:1px solid #eadcc8;border-radius:28px;background:linear-gradient(135deg,#fffaf3 0%,#fff 60%,#fff1df 100%);padding:20px;display:grid;grid-template-columns:1fr 1.45fr;gap:20px;align-items:center}
+    .proposal-contact-brand{border-right:1px solid #eadcc8;padding-right:18px}.proposal-contact-brand .brand-name{font-size:34px;font-weight:950;color:var(--orange);letter-spacing:-.04em}.proposal-contact-logo{height:58px;max-width:210px;object-fit:contain;display:block}.proposal-contact-brand .tagline{font-size:13px;line-height:1.45;color:#405149;margin-top:10px}
+    .proposal-contact-info{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .proposal-contact-item{border:1px solid #eadcc8;background:#fff;border-radius:16px;padding:10px;font-size:12px;line-height:1.35;color:#405149}.proposal-contact-item b{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:#68746d;margin-bottom:3px}.proposal-contact-item span{font-weight:850;color:#153d35;word-break:break-word}
     table{width:100%;border-collapse:collapse;font-size:12px}
     th{background:#153d35;color:#fff;text-align:left;padding:9px;border:1px solid #153d35}
     td{padding:8px;border:1px solid #eadcc8;vertical-align:top;line-height:1.35}
@@ -110,10 +121,43 @@
     .note-card .mini-thumb{width:38px;height:38px;border-radius:9px;background:#f4eadc;object-fit:cover;border:1px solid var(--line)}
     .notes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
     .note-card{border:1px solid var(--line);background:#fff;border-radius:18px;padding:10px}.note-card h3{font-size:14px;margin:0 0 4px}.note-card p{font-size:12px}
+
+    /* ===== PRODUCT DETAIL / EVIDENCE CARD ===== */
+    .product-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+    .mini-action{border:1px solid var(--line);background:#fffaf3;color:var(--green);border-radius:999px;padding:6px 9px;font-size:11px;font-weight:900;cursor:pointer}
+    .mini-action.orange{border-color:#ffd2a1;background:#fff7ed;color:#8b4206}
+    .product-detail-backdrop{position:fixed;inset:0;background:rgba(19,61,53,.42);backdrop-filter:blur(10px);z-index:100;display:none;align-items:center;justify-content:center;padding:18px}
+    .product-detail-backdrop.active{display:flex}
+    .product-detail-modal{width:min(1180px,96vw);max-height:94vh;background:#fff;border:1px solid var(--line);border-radius:28px;box-shadow:0 28px 80px rgba(20,30,20,.28);overflow:hidden;display:flex;flex-direction:column}
+    .product-detail-modal.fullscreen{width:100vw;height:100vh;max-height:100vh;border-radius:0}
+    .product-detail-head{padding:14px 16px;background:#fffaf3;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+    .product-detail-title{min-width:0}.product-detail-title .code{font-size:13px;font-weight:950;color:var(--orange);letter-spacing:.02em}.product-detail-title h2{font-size:20px;line-height:1.2;margin:2px 0 4px;color:var(--green)}.product-detail-title p{font-size:13px;color:var(--muted);line-height:1.4;margin:0}
+    .product-detail-toolbar{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .product-detail-body{padding:16px;overflow:auto;background:#fff}
+    .product-detail-hero{border:1px solid var(--line);border-radius:24px;background:#f7efe4;overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:320px}
+    .product-detail-hero img{width:100%;height:auto;max-height:78vh;display:block;object-fit:contain;background:#fff}
+    .product-detail-empty{min-height:260px;width:100%;display:flex;align-items:center;justify-content:center;color:#9e815a;font-weight:950;background:#fff7ed;text-align:center;padding:20px}
+    .product-detail-caption{font-size:12px;color:var(--muted);line-height:1.45;margin:8px 2px 0}
+    .product-detail-section{margin-top:16px;border:1px solid var(--line);border-radius:22px;background:#fffaf3;padding:14px}
+    .product-detail-section h3{font-size:17px;color:var(--green);margin:0 0 6px}.product-detail-section p{font-size:13px;color:var(--muted);line-height:1.45;margin:0 0 10px}
+    .product-detail-field-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .field-ref-card{border:1px solid var(--line);border-radius:18px;background:#fff;overflow:hidden}.field-ref-card img{width:100%;height:165px;object-fit:cover;display:block;background:#f4eadc}.field-ref-card div{padding:9px;font-size:12px;line-height:1.35;color:#405149}.field-ref-card b{text-transform:capitalize;color:var(--green)}
+    .sales-note-box{background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px;color:#405149;font-size:13px;line-height:1.55;white-space:pre-wrap}
+    .detail-spec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.detail-spec{border:1px solid var(--line);background:#fff;border-radius:14px;padding:9px}.detail-spec b{display:block;font-size:11px;text-transform:uppercase;color:var(--muted);margin-bottom:3px}.detail-spec span{font-size:13px;color:var(--green);font-weight:800}
+    #productDetailPrintArea{display:none}
+    @media(max-width:900px){.product-detail-backdrop{padding:0}.product-detail-modal{width:100vw;max-height:100vh;border-radius:0}.product-detail-head{flex-direction:column}.product-detail-toolbar{justify-content:flex-start}.product-detail-field-grid{grid-template-columns:1fr}.detail-spec-grid{grid-template-columns:1fr}.field-ref-card img{height:210px}}
+
     .hidden-frame{display:none}
     @media(max-width:900px){.grid{grid-template-columns:1fr}.product-grid{grid-template-columns:1fr}.cover-options{grid-template-columns:1fr 1fr}.note-preview-grid{grid-template-columns:repeat(3,1fr)}.cover,.two-col{grid-template-columns:1fr}.proposal-products{grid-template-columns:1fr}.slide{min-height:auto;padding:34px 22px}.cover h1{font-size:32px}.notes-grid{grid-template-columns:1fr}}
     @media print{
       body{background:#fff}.head,.tabs,.card,.preview-toolbar,.bottom-nav{display:none!important}.app{padding:0;max-width:none}.preview-wrap{border:0;box-shadow:none;margin:0}.slide{border-bottom:0;min-height:100vh}.proposal{display:block}
+      body.product-detail-printing > *:not(#productDetailPrintArea){display:none!important}
+      body.product-detail-printing #productDetailPrintArea{display:block!important;background:#fff;color:#183d35}
+      body.product-detail-printing .product-detail-print-page{page-break-after:always;padding:22px}
+      body.product-detail-printing .product-detail-print-page:last-child{page-break-after:auto}
+      body.product-detail-printing .product-detail-hero{border:0;border-radius:0;min-height:auto;background:#fff}
+      body.product-detail-printing .product-detail-hero img{width:100%;height:auto;object-fit:contain}
+      body.product-detail-printing .product-detail-section{box-shadow:none;border:1px solid #eadcc8;background:#fffaf3}
     }
   </style>
 </head>
@@ -213,6 +257,23 @@
 
 <iframe name="hiddenFrame" class="hidden-frame"></iframe>
 
+<div class="product-detail-backdrop" id="productDetailBackdrop" aria-hidden="true">
+  <div class="product-detail-modal" id="productDetailModal" role="dialog" aria-modal="true" aria-labelledby="productDetailHeading">
+    <div class="product-detail-head">
+      <div class="product-detail-title" id="productDetailTitle"></div>
+      <div class="product-detail-toolbar">
+        <button class="btn light" type="button" id="productDetailFullscreenBtn">Toàn màn hình</button>
+        <button class="btn light" type="button" id="productDetailOpenImageBtn">Mở ảnh</button>
+        <button class="btn light" type="button" id="productDetailCopyBtn">Copy sales note</button>
+        <button class="btn orange" type="button" id="productDetailPrintBtn">In / Lưu PDF</button>
+        <button class="btn red" type="button" id="productDetailCloseBtn">Đóng</button>
+      </div>
+    </div>
+    <div class="product-detail-body" id="productDetailBody"></div>
+  </div>
+</div>
+<div id="productDetailPrintArea"></div>
+
 <script>
 (function(){
   /*
@@ -234,6 +295,7 @@
   var noteFiles = [];
   var selectedCoverUrl = "";
   var currentMode = "product_spotlight";
+  var currentDetailProductId = "";
 
   var modes = [
     {id:"product_spotlight", vi:"Một sản phẩm cụ thể", en:"Product Spotlight", desc:"Khách hỏi một sản phẩm chính; gợi ý thêm sản phẩm cùng dòng."},
@@ -317,6 +379,19 @@
     $("clearNoteFilesBtn").addEventListener("click", function(){ noteFiles = []; $("noteImage").value = ""; renderNotePreviews(); });
     document.querySelectorAll("[data-note-template]").forEach(function(btn){
       btn.addEventListener("click", function(){ applyNoteTemplate(btn.getAttribute("data-note-template")); });
+    });
+    if($("productDetailCloseBtn")) $("productDetailCloseBtn").addEventListener("click", closeProductDetail);
+    if($("productDetailBackdrop")) $("productDetailBackdrop").addEventListener("click", function(e){ if(e.target === $("productDetailBackdrop")) closeProductDetail(); });
+    if($("productDetailFullscreenBtn")) $("productDetailFullscreenBtn").addEventListener("click", toggleProductDetailFullscreen);
+    if($("productDetailOpenImageBtn")) $("productDetailOpenImageBtn").addEventListener("click", openCurrentProductHeroImage);
+    if($("productDetailCopyBtn")) $("productDetailCopyBtn").addEventListener("click", function(){ copyProductSalesNote(currentDetailProductId); });
+    if($("productDetailPrintBtn")) $("productDetailPrintBtn").addEventListener("click", printProductDetail);
+    document.addEventListener("click", function(e){
+      var btn = e.target && e.target.closest ? e.target.closest("[data-product-detail]") : null;
+      if(!btn) return;
+      e.preventDefault();
+      e.stopPropagation();
+      openProductDetail(btn.getAttribute("data-product-detail"));
     });
   }
 
@@ -419,6 +494,7 @@
         renderAllProducts();
       });
     });
+    bindProductDetailButtons();
   }
 
   function productCard(p){
@@ -431,7 +507,9 @@
       '<div><h3>'+esc(p.product_name_en||p.product_name_vi||p.product_id)+'</h3>'+
       '<div class="meta">'+esc(p.product_group||"")+' · '+esc(p.material||"")+'</div>'+
       '<div class="reason">'+esc(reason)+'</div>'+
-      '<div><span class="pill">'+esc(p.priority||"")+'</span><span class="pill">'+esc(p.product_id||"")+'</span></div></div></div>';
+      '<div><span class="pill">'+esc(p.priority||"")+'</span><span class="pill">'+esc(p.product_id||"")+'</span></div>'+
+      '<div class="product-actions"><button type="button" class="mini-action orange" data-product-detail="'+esc(p.product_id)+'">Chi tiết</button></div>'+
+      '</div></div>';
   }
 
   function reasonFor(p){
@@ -542,19 +620,27 @@
     };
   }
 
+  function proposalDateText(){
+    var d = new Date();
+    var dd = String(d.getDate()).padStart(2, "0");
+    var mm = String(d.getMonth()+1).padStart(2, "0");
+    var yyyy = d.getFullYear();
+    return dd + "/" + mm + "/" + yyyy;
+  }
+
   function proposalHtml(buyer, sel){
     var coverImg = selectedCoverUrl || firstImage(sel);
     var logo = brand.logo_url ? '<img class="proposal-logo" src="'+esc(brand.logo_url)+'">' : '<div style="font-size:34px;font-weight:900;color:var(--orange)">pefso</div>';
     var title = titleFor(buyer);
     var context = buyer.brief || "The buyer is exploring suitable natural-material product directions from PEFSO.";
     return ''+
-    '<section class="slide cover"><div>'+logo+'<div class="orange-bar"></div><h1>'+esc(title)+'</h1><p style="font-size:18px;line-height:1.55;color:#405149">Prepared for '+esc(buyer.company||"Buyer")+'</p><p style="color:#68746d">'+esc(buyer.country||"")+'</p></div><div class="cover-art">'+(coverImg?'<img src="'+esc(coverImg)+'">':'PEFSO PRODUCT IMAGE')+'</div></section>'+
+    '<section class="slide cover"><div>'+logo+'<div class="proposal-date">Prepared on '+esc(proposalDateText())+'</div><div class="orange-bar"></div><h1>'+esc(title)+'</h1><p style="font-size:18px;line-height:1.55;color:#405149">Prepared for '+esc(buyer.company||"Buyer")+'</p><p style="color:#68746d">'+esc(buyer.country||"")+'</p></div><div class="cover-art">'+(coverImg?'<img src="'+esc(coverImg)+'">':'PEFSO PRODUCT IMAGE')+'</div></section>'+
     '<section class="slide"><h2 class="section-title">Buyer Context & Recommended Direction</h2><div class="two-col"><div class="box"><h3>Buyer Context</h3><p>'+esc(context)+'</p></div><div class="box"><h3>Recommended Direction</h3><p>'+esc(directionText(buyer))+'</p></div></div><div class="box" style="margin-top:18px"><h3>Why PEFSO</h3><ul><li>Vietnam-based natural-material sourcing and OEM/ODM coordination.</li><li>Suitable for sample development, pilot orders and repeat supply programs.</li><li>Product directions can be customized by material, size, finishing, packaging and buyer application.</li></ul></div></section>'+
     '<section class="slide"><h2 class="section-title">Recommended Product Collection</h2><div class="proposal-products">'+sel.slice(0,6).map(proposalProductCard).join("")+'</div></section>'+
     (sel.length>6?'<section class="slide"><h2 class="section-title">Additional Product Options</h2><div class="proposal-products">'+sel.slice(6,12).map(proposalProductCard).join("")+'</div></section>':'')+
     '<section class="slide"><h2 class="section-title">Product Matrix</h2>'+matrixTable(sel)+'</section>'+
     fieldEvidenceSlide(sel)+
-    '<section class="slide"><h2 class="section-title">Customization & Next Steps</h2><div class="two-col"><div class="box"><h3>Customization Options</h3><ul><li>Material, size, shape and finishing adaptation.</li><li>Packaging format and buyer branding direction.</li><li>Sample development based on target use case.</li></ul></div><div class="box"><h3>Next Steps</h3><ul><li>Confirm preferred product directions.</li><li>Define sample specifications, quantity and packaging.</li><li>Align target timeline for sample and pilot order.</li></ul></div></div><div style="position:absolute;bottom:46px;left:58px;right:58px;color:#68746d;font-size:14px">'+contactBlock()+'</div></section>';
+    '<section class="slide"><h2 class="section-title">Customization & Next Steps</h2><div class="two-col"><div class="box"><h3>Customization Options</h3><ul><li>Material, size, shape and finishing adaptation.</li><li>Packaging format and buyer branding direction.</li><li>Sample development based on target use case.</li></ul></div><div class="box"><h3>Next Steps</h3><ul><li>Confirm preferred product directions.</li><li>Define sample specifications, quantity and packaging.</li><li>Align target timeline for sample and pilot order.</li></ul></div></div>'+contactCardHtml()+'</section>';
   }
 
   function titleFor(buyer){
@@ -581,9 +667,66 @@
     p = sel.find(function(x){ return x.image_main || x.main_square_url; }); 
     return p ? (p.image_main || p.main_square_url) : ""; 
   }
+  function fmtNumber(v){
+    if(v === null || v === undefined || v === "") return "";
+    var n = Number(String(v).replace(/,/g,""));
+    if(!isNaN(n)) return n.toLocaleString("en-US");
+    return String(v);
+  }
+
+  function productMoq(p){
+    if(!p) return "";
+    if(p.moq_note) return String(p.moq_note);
+    if(p.moq) return String(p.moq);
+    var min = p.moq_min, max = p.moq_max, unit = p.unit || "pcs";
+    if(min && max && String(min) !== String(max)) return fmtNumber(min) + " – " + fmtNumber(max) + " " + unit;
+    if(min) return "From " + fmtNumber(min) + " " + unit;
+    if(max) return "Up to " + fmtNumber(max) + " " + unit;
+    return "To be confirmed";
+  }
+
+  function productLeadTime(p){
+    if(!p) return "";
+    if(p.lead_time) return String(p.lead_time);
+    var min = p.lead_time_min_days, max = p.lead_time_max_days;
+    if(min && max && String(min) !== String(max)) return fmtNumber(min) + " – " + fmtNumber(max) + " days";
+    if(min) return "From " + fmtNumber(min) + " days";
+    if(max) return "Up to " + fmtNumber(max) + " days";
+    return "To be confirmed";
+  }
+
+  function productionConditionText(p){
+    var parts = [];
+    var moq = productMoq(p);
+    var lead = productLeadTime(p);
+    if(moq) parts.push("MOQ: " + moq);
+    if(lead) parts.push("Lead time: " + lead);
+    if(p.sample_status) parts.push("Sample: " + p.sample_status);
+    if(p.supplier_status) parts.push("Supply status: " + p.supplier_status);
+    return parts.join(" · ");
+  }
+
   function proposalProductCard(p){
     var imgUrl = p.image_main || p.main_square_url || ''; var img = imgUrl ? '<img src="'+esc(imgUrl)+'">' : 'IMAGE';
-    return '<div class="proposal-product"><div class="pimg">'+img+'</div><h3>'+esc(p.product_name_en||"")+'</h3><p style="font-size:12px;line-height:1.45;color:#405149">'+esc(p.short_description_en||p.use_case_en||"")+'</p><p style="font-size:12px;color:#68746d"><b>Material:</b> '+esc(p.material||"")+'</p></div>';
+    var moq = productMoq(p), lead = productLeadTime(p);
+    var buyerFit = p.buyer_fit_en || "";
+    var custom = p.customization_options_en || "";
+    return '<div class="proposal-product">'+
+      '<div class="pimg">'+img+'</div>'+
+      '<h3>'+esc(p.product_name_en||p.product_name_vi||p.product_id||"")+'</h3>'+
+      '<div class="product-line"><b>'+esc(p.product_id||"")+'</b>'+(p.product_group ? ' · '+esc(p.product_group) : '')+'</div>'+
+      '<p style="font-size:12px;line-height:1.45;color:#405149">'+esc(p.short_description_en||p.use_case_en||"")+'</p>'+
+      '<div class="production-mini">'+
+        '<div><b>MOQ</b>'+esc(moq)+'</div>'+
+        '<div><b>Lead Time</b>'+esc(lead)+'</div>'+
+      '</div>'+
+      '<div class="product-more-info">'+
+        (p.material ? '<b>Material:</b> '+esc(p.material)+'<br>' : '')+
+        (p.use_case_en ? '<b>Use case:</b> '+esc(p.use_case_en)+'<br>' : '')+
+        (buyerFit ? '<b>Buyer fit:</b> '+esc(buyerFit)+'<br>' : '')+
+        (custom ? '<b>Customization:</b> '+esc(custom)+'<br>' : '')+
+        ((p.sample_status || p.supplier_status) ? '<b>Production status:</b> '+esc([p.sample_status,p.supplier_status].filter(Boolean).join(' · ')) : '')+
+      '</div></div>';
   }
 
   function fieldEvidenceSlide(sel){
@@ -599,8 +742,22 @@
   }
 
   function matrixTable(sel){
-    return '<table><thead><tr><th>Product</th><th>Material</th><th>Use Case</th><th>Why Recommended</th><th>MOQ</th><th>Lead Time</th></tr></thead><tbody>'+
-      sel.map(function(p){ return '<tr><td><b>'+esc(p.product_name_en||"")+'</b></td><td>'+esc(p.material||"")+'</td><td>'+esc(p.use_case_en||"")+'</td><td>'+esc(whyRecommendedEn(p))+'</td><td>'+esc(p.moq_note||p.moq||"")+'</td><td>'+esc(p.lead_time||"")+'</td></tr>'; }).join("")+
+    return '<table class="matrix-table"><thead><tr><th>Code</th><th>Product</th><th>Material</th><th>Use Case</th><th>Buyer Fit</th><th>Customization</th><th>MOQ</th><th>Lead Time</th><th>Sample / Supply Status</th><th>Why Recommended</th></tr></thead><tbody>'+ 
+      sel.map(function(p){
+        var status = [p.sample_status, p.supplier_status].filter(Boolean).join(' / ');
+        return '<tr>'+ 
+          '<td><b>'+esc(p.product_id||"")+'</b></td>'+ 
+          '<td><b>'+esc(p.product_name_en||p.product_name_vi||"")+'</b><br><span style="color:#68746d">'+esc(p.product_group||"")+'</span></td>'+ 
+          '<td>'+esc(p.material||"")+'</td>'+ 
+          '<td>'+esc(p.use_case_en||"")+'</td>'+ 
+          '<td>'+esc(p.buyer_fit_en||"")+'</td>'+ 
+          '<td>'+esc(p.customization_options_en||"")+'</td>'+ 
+          '<td>'+esc(productMoq(p))+'</td>'+ 
+          '<td>'+esc(productLeadTime(p))+'</td>'+ 
+          '<td>'+esc(status)+'</td>'+ 
+          '<td>'+esc(whyRecommendedEn(p))+'</td>'+ 
+        '</tr>'; 
+      }).join("")+
       '</tbody></table>';
   }
 
@@ -613,9 +770,42 @@
   }
 
   function matrixTsv(sel){
-    var header = ["Product","Material","Use Case","Why Recommended","Customization Options","MOQ","Lead Time","Product ID"].join("\t");
-    var rows = sel.map(function(p){ return [p.product_name_en,p.material,p.use_case_en,whyRecommendedEn(p),p.customization_options_en,p.moq_note||p.moq,p.lead_time,p.product_id].map(function(x){ return String(x||"").replace(/[\t\r\n]+/g," "); }).join("\t"); });
+    var header = ["Product ID","Product","Product Group","Material","Use Case","Buyer Fit","Customization Options","MOQ","Lead Time","Sample Status","Supplier Status","Why Recommended"].join("\t");
+    var rows = sel.map(function(p){
+      return [p.product_id,p.product_name_en,p.product_group,p.material,p.use_case_en,p.buyer_fit_en,p.customization_options_en,productMoq(p),productLeadTime(p),p.sample_status,p.supplier_status,whyRecommendedEn(p)]
+        .map(function(x){ return String(x||"").replace(/[\t\r\n]+/g," "); }).join("\t");
+    });
     return [header].concat(rows).join("\n");
+  }
+
+  function contactBlock(){
+    return [
+      brand.contact_name || "Thang MQ",
+      brand.contact_email || "thangmq@pefso.com",
+      brand.phone || "+84 946 535858",
+      brand.website || "www.pefso.com",
+      brand.address || "Kieu Ky - Gia Lam - Hanoi - Vietnam"
+    ].filter(Boolean).map(esc).join(" · ");
+  }
+
+  function contactCardHtml(){
+    var brandName = brand.brand_name || "PEFSO";
+    var tagline = brand.tagline || "Natural-material OEM/ODM partner for gift, lifestyle, fragrance and tableware-adjacent products";
+    var name = brand.contact_name || "Thang MQ";
+    var email = brand.contact_email || "thangmq@pefso.com";
+    var phone = brand.phone || "+84 946 535858";
+    var website = brand.website || "www.pefso.com";
+    var address = brand.address || "Kieu Ky - Gia Lam - Hanoi - Vietnam";
+    var logoHtml = brand.logo_url ? '<img class="proposal-contact-logo" src="'+esc(brand.logo_url)+'" alt="PEFSO">' : '<div class="brand-name">'+esc(brandName)+'</div>';
+    return '<div class="proposal-contact-card">'+
+      '<div class="proposal-contact-brand">'+logoHtml+'<div class="tagline">'+esc(tagline)+'</div></div>'+
+      '<div class="proposal-contact-info">'+
+        '<div class="proposal-contact-item"><b>Contact person</b><span>'+esc(name)+'</span></div>'+
+        '<div class="proposal-contact-item"><b>Email</b><span>'+esc(email)+'</span></div>'+
+        '<div class="proposal-contact-item"><b>Phone / WhatsApp</b><span>'+esc(phone)+'</span></div>'+
+        '<div class="proposal-contact-item"><b>Website</b><span>'+esc(website)+'</span></div>'+
+        '<div class="proposal-contact-item" style="grid-column:1/-1"><b>Address</b><span>'+esc(address)+'</span></div>'+
+      '</div></div>';
   }
 
   function contactBlock(){
@@ -844,6 +1034,261 @@
       var names = (n.image_names || []).length ? '<p style="margin-top:6px;color:#8b4206"><b>Ảnh:</b> '+esc((n.image_names || []).join(", "))+'</p>' : "";
       return '<div class="note-card"><h3>'+esc(n.name||n.note_type)+'</h3><p>'+esc(n.raw_note||"")+'</p><p>'+esc(n.location||"")+'</p>'+names+'<div class="thumb-row">'+thumbs+'</div></div>';
     }).join("");
+  }
+
+
+  /* ===== PRODUCT DETAIL / EVIDENCE CARD FUNCTIONS ===== */
+  function findProductById(productId){
+    return products.find(function(p){ return String(p.product_id) === String(productId); });
+  }
+
+  function bindProductDetailButtons(){
+    document.querySelectorAll("[data-product-detail]").forEach(function(btn){
+      btn.addEventListener("click", function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        openProductDetail(btn.getAttribute("data-product-detail"));
+      });
+    });
+  }
+
+  function pageBaseUrl(){
+    // Tạo base URL ổn định cho GitHub Pages, kể cả khi index.html nằm trong repo /info/.
+    var origin = window.location.origin || "";
+    var path = window.location.pathname || "/";
+    var parts = path.split("/").filter(Boolean);
+    if(origin.indexOf("github.io") >= 0 && parts.length){
+      return origin + "/" + parts[0] + "/";
+    }
+    return new URL("./", window.location.href).href;
+  }
+
+  function addCacheBust(u){
+    u = String(u || "").trim();
+    if(!u) return "";
+    if(u.indexOf("data:") === 0) return u;
+    // Tránh cache 404 của GitHub Pages/browser sau khi vừa upload ảnh.
+    var sep = u.indexOf("?") >= 0 ? "&" : "?";
+    return u + sep + "v=20260510b";
+  }
+
+  function productEvidenceCardGuessUrls(p){
+    if(!p || !p.product_id) return [];
+    var id = String(p.product_id).trim();
+    var filename = id + "_product_card.jpg";
+    var rel = "assets/products/cards/" + filename;
+    var base = pageBaseUrl();
+    var urls = [];
+    function add(u){
+      u = String(u || "").trim();
+      if(u && urls.indexOf(u) < 0) urls.push(u);
+    }
+    add(p.product_evidence_card_path);
+    add(rel);
+    add(base + rel);
+    // Fallback theo repo hiện tại của PEFSO. Giúp app vẫn thấy ảnh nếu HTML đang mở từ cache hoặc đường dẫn tương đối bị lệch.
+    add("https://newpefso.github.io/info/" + rel);
+    return urls;
+  }
+
+  function productHeroCandidates(p){
+    if(!p) return [];
+    var list = [];
+    function add(u){
+      u = String(u || "").trim();
+      if(u && list.indexOf(u) < 0) list.push(u);
+    }
+    // Ưu tiên URL đã dán trong Google Sheet.
+    add(p.product_evidence_card_url);
+    add(p.product_card_url);
+    // Nếu backend chưa trả cột mới từ ASSET_LIBRARY, app tự đoán đúng theo quy ước tên file.
+    productEvidenceCardGuessUrls(p).forEach(add);
+    add(p.catalogue_wide_url);
+    add(p.image_catalogue);
+    if(p.image_gallery){
+      String(p.image_gallery).split(",").map(function(x){ return x.trim(); }).filter(Boolean).forEach(add);
+    }
+    /* Không fallback sang main_square_url/image_main trong màn Chi tiết.
+       Lý do: Chi tiết cần hiện Product Evidence Card ngang; ảnh vuông chỉ dùng làm thumbnail. */
+    return list;
+  }
+
+  function productHeroImage(p){
+    return productHeroCandidates(p)[0] || "";
+  }
+
+  function heroImgWithFallback(p){
+    var candidates = productHeroCandidates(p).map(addCacheBust);
+    if(!candidates.length){
+      return '<div class="product-detail-empty">CHƯA CÓ PRODUCT EVIDENCE CARD<br>Hãy upload ảnh vào assets/products/cards/ và dán URL vào ASSET_LIBRARY.product_evidence_card_url</div>';
+    }
+    var debugList = productHeroCandidates(p).map(function(u){ return '<div style=&quot;font-size:11px;line-height:1.35;margin-top:4px;color:#9e815a;word-break:break-all&quot;>'+esc(u)+'</div>'; }).join('');
+    return '<img src="'+esc(candidates[0])+'" data-fallbacks="'+esc(candidates.slice(1).join('||'))+'" onerror="var f=this.getAttribute(\'data-fallbacks\').split(\'||\').filter(Boolean); if(f.length){this.src=f.shift(); this.setAttribute(\'data-fallbacks\', f.join(\'||\'));}else{this.outerHTML=\'<div class=&quot;product-detail-empty&quot;>CHƯA TÌM THẤY ẢNH PRODUCT CARD<br>File cần có: '+esc(p.product_id || '')+'_product_card.jpg<br><span style=&quot;font-size:12px;font-weight:700&quot;>Các URL app đã thử:</span>'+debugList+'</div>\';}" alt="'+esc(p.product_name_en || p.product_id)+'">';
+  }
+
+  function productHeroCaption(p){
+    return p.product_evidence_card_caption_en || p.product_card_customer_note_en || p.short_description_en || p.use_case_en || "";
+  }
+
+  function getFieldPhotos(p){
+    var photos = [];
+    if(!p) return photos;
+    for(var i = 1; i <= 5; i++){
+      var url = p["field_photo_" + i + "_url"];
+      var visible = String(p["field_photo_" + i + "_visible"] || "yes").toLowerCase();
+      if(url && visible !== "no"){
+        photos.push({
+          url: url,
+          caption: p["field_photo_" + i + "_caption_en"] || "Field / production reference",
+          type: p["field_photo_" + i + "_type"] || "field"
+        });
+      }
+    }
+    return photos;
+  }
+
+  function fieldPhotosHtml(p){
+    var photos = getFieldPhotos(p);
+    if(!photos.length) return "";
+    return '<div class="product-detail-section">'+
+      '<h3>Field References</h3>'+
+      '<p>Selected real-work references for buyer discussion and production coordination review.</p>'+
+      '<div class="product-detail-field-grid">'+
+        photos.map(function(x){
+          return '<div class="field-ref-card">'+
+            '<img src="'+esc(x.url)+'" alt="">'+
+            '<div><b>'+esc(x.type)+'</b><br>'+esc(x.caption)+'</div>'+
+          '</div>';
+        }).join("")+
+      '</div>'+
+    '</div>';
+  }
+
+  function productSalesNoteText(productId){
+    var p = findProductById(productId);
+    if(!p) return "";
+    var points = String(p.product_card_talking_points_en || "").split(";").map(function(x){ return x.trim(); }).filter(Boolean);
+    if(!points.length){
+      points = [
+        p.buyer_fit_en ? "Buyer fit: " + p.buyer_fit_en : "",
+        p.material ? "Material: " + p.material : "",
+        p.use_case_en ? "Use case: " + p.use_case_en : "",
+        p.customization_options_en ? "Customization: " + p.customization_options_en : ""
+      ].filter(Boolean);
+    }
+    var lines = [];
+    lines.push((p.product_id || "") + " — " + (p.product_name_en || p.product_name_vi || "Product"));
+    lines.push("");
+    lines.push(p.product_card_sales_summary_en || p.short_description_en || p.use_case_en || "");
+    if(points.length){
+      lines.push("");
+      lines.push("Key points:");
+      points.forEach(function(pt){ lines.push("- " + pt); });
+    }
+    var photos = getFieldPhotos(p);
+    if(photos.length){
+      lines.push("");
+      lines.push("Field references are attached for buyer discussion and production coordination review.");
+    }
+    return lines.filter(function(x, idx){ return idx === 1 || String(x||"").trim(); }).join("\n");
+  }
+
+  function salesNoteHtml(p){
+    var text = productSalesNoteText(p.product_id);
+    if(!text) return "";
+    return '<div class="product-detail-section"><h3>Sales Note</h3><div class="sales-note-box">'+esc(text)+'</div></div>';
+  }
+
+  function detailSpecsHtml(p){
+    var specs = [
+      ["Product Code", p.product_id],
+      ["Product Group", p.product_group],
+      ["Material", p.material],
+      ["Finish", p.finish_level],
+      ["Nature", p.product_nature],
+      ["Buyer Fit", p.buyer_fit_en],
+      ["MOQ", productMoq(p)],
+      ["Lead Time", productLeadTime(p)],
+      ["Sample Status", p.sample_status],
+      ["Supplier Status", p.supplier_status],
+      ["Status", p.product_detail_status || p.product_evidence_card_status]
+    ].filter(function(x){ return x[1]; });
+    if(!specs.length) return "";
+    return '<div class="product-detail-section"><h3>Product Quick Data</h3><div class="detail-spec-grid">'+
+      specs.map(function(x){ return '<div class="detail-spec"><b>'+esc(x[0])+'</b><span>'+esc(x[1])+'</span></div>'; }).join("")+
+      '</div></div>';
+  }
+
+  function productDetailHtml(p){
+    var heroHtml = heroImgWithFallback(p);
+    var caption = productHeroCaption(p);
+    return '<div class="product-detail-hero">'+heroHtml+'</div>'+
+      (caption ? '<div class="product-detail-caption">'+esc(caption)+'</div>' : '')+
+      fieldPhotosHtml(p)+
+      salesNoteHtml(p)+
+      detailSpecsHtml(p)+
+      contactCardHtml();
+  }
+
+  function openProductDetail(productId){
+    var p = findProductById(productId);
+    if(!p){ alert("Không tìm thấy sản phẩm."); return; }
+    currentDetailProductId = productId;
+    var title = p.product_card_title_en || p.product_name_en || p.product_name_vi || p.product_id;
+    var subtitle = p.product_card_subtitle_en || p.short_description_en || p.use_case_en || "";
+    $("productDetailTitle").innerHTML = '<div class="code">'+esc(p.product_id || "")+'</div><h2 id="productDetailHeading">'+esc(title)+'</h2>'+(subtitle ? '<p>'+esc(subtitle)+'</p>' : '');
+    $("productDetailBody").innerHTML = productDetailHtml(p);
+    $("productDetailModal").classList.remove("fullscreen");
+    $("productDetailBackdrop").classList.add("active");
+    $("productDetailBackdrop").setAttribute("aria-hidden", "false");
+  }
+
+  function closeProductDetail(){
+    currentDetailProductId = "";
+    if($("productDetailBackdrop")){
+      $("productDetailBackdrop").classList.remove("active");
+      $("productDetailBackdrop").setAttribute("aria-hidden", "true");
+    }
+  }
+
+  function toggleProductDetailFullscreen(){
+    if($("productDetailModal")) $("productDetailModal").classList.toggle("fullscreen");
+  }
+
+  function openCurrentProductHeroImage(){
+    var p = findProductById(currentDetailProductId);
+    var url = productHeroImage(p);
+    if(url) window.open(url, "_blank");
+  }
+
+  function copyProductSalesNote(productId){
+    var text = productSalesNoteText(productId);
+    if(!text) return;
+    if(navigator.clipboard){
+      navigator.clipboard.writeText(text).then(function(){ alert("Đã copy sales note."); });
+    }else{
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      alert("Đã copy sales note.");
+    }
+  }
+
+  function printProductDetail(){
+    var p = findProductById(currentDetailProductId);
+    if(!p) return;
+    $("productDetailPrintArea").innerHTML = '<div class="product-detail-print-page">'+productDetailHtml(p)+'</div>';
+    document.body.classList.add("product-detail-printing");
+    var cleanup = function(){
+      document.body.classList.remove("product-detail-printing");
+      $("productDetailPrintArea").innerHTML = "";
+      window.onafterprint = null;
+    };
+    window.onafterprint = cleanup;
+    setTimeout(function(){ window.print(); setTimeout(cleanup, 1200); }, 80);
   }
 
   function compressImage(file, done){
